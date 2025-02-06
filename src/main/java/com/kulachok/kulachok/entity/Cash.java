@@ -26,10 +26,33 @@ public class Cash {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
+
+    @Column(name = "amount", nullable = false)
     BigDecimal amount;
+
+    @Column(name = "description", nullable = false)
     String description;
+
+    @Column(name = "transactionData", nullable = false)
     LocalDateTime transactionData;
+
+    @Column(name = "transactionType", nullable = false)
     String transactionType;
+
+    @Column(name = "createdAt", nullable = false)
     LocalDateTime createdAt;
+
+    @Column(name = "updatedAt", nullable = false)
     LocalDateTime updatedAt;
+
+    @OneToOne(mappedBy = "cash", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Transaction transaction;
+
+    @OneToOne
+    @JoinColumn(name = "userId", unique = true, nullable = false)
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "actrisId", unique = true, nullable = false)
+    private Actris actris;
 }

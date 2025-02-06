@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -29,22 +30,39 @@ public class User {
     @Column(name = "name", nullable = false)
     String name;
 
-
-    @Column(name = "registration_date")
+    @Column(name = "registration_date", nullable = false)
     LocalDate registrationDate;
 
-    @Column(name = "age")
+    @Column(name = "age", nullable = false)
     int age;
 
     @Column(name = "cash_account", nullable = false)
     BigInteger cashAccount;
 
-    @Column(name = "subscriptions", nullable = false)
+    @Column(name = "subscriptions")
     String subscriptions;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     String email;
 
     @Column(name = "password", nullable = false)
     String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
+    private Cash cash;
+
+    @ManyToMany(mappedBy = "subscribedActresses")
+    private List<User> subscribers;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_subscriptions",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "actrisId")
+    )
+    private List<Actris> subscribedActresses;
+
 }

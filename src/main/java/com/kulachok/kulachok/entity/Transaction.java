@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "transactions")
@@ -20,16 +21,25 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int transactionId;
 
-    int userId;
-
-    int accountId;
-
-    int cashId;
-
+    @Column(name = "transactionDate", nullable = false)
     LocalDateTime transactionDate;
 
+    @Column(name = "createdAt", nullable = false)
     LocalDateTime createdAt;
 
+    @Column(name = "updatedAt", nullable = false)
     LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "actrisId", nullable = false)
+    private Actris actris;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cashId", nullable = false)
+    private Cash cash;
 
 }
