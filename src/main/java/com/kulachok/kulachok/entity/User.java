@@ -25,26 +25,22 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
-    String name;
+    private String name;
 
-    @Column(name = "registration_date", nullable = false)
-    LocalDate registrationDate;
+    @Column(name = "registrationDate", nullable = false)
+    private LocalDate registrationDate;
 
     @Column(name = "age", nullable = false)
-    int age;
-
-
-    @Column(name = "email")
-    String email;
-
-    @Column(name = "password", nullable = false)
-    String password;
+    private int age;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cash cashAccount;
+
+    @Column(name = "email", unique = true)
+    private String email;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSubscription> subscriptions;

@@ -20,21 +20,21 @@ public class UserSubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "UserID", nullable = false)
     private Long userId;
 
-    @Column(name = "actris_id", nullable = false)
+    @Column(name = "ActrisID", nullable = false)
     private Long actrisId;
 
-    @Column(name = "subscription_date")
-    private LocalDateTime subscriptionDate;
+    @Column(name = "SubscriptionDate")
+    private LocalDateTime subscriptionDate = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    @JoinColumn(name = "UserID", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "actrisId", insertable = false, updatable = false)
+    @JoinColumn(name = "ActrisID", insertable = false, updatable = false)
     private Actris actris;
 
 }

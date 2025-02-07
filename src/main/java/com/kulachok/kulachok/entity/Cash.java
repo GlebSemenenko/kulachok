@@ -26,19 +26,19 @@ public class Cash {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Long id;
 
     @Column(name = "amount", nullable = false)
-    BigDecimal amount;
+    private BigDecimal amount;
 
-    @Column(name = "description", nullable = false)
-    String description;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "transactionData", nullable = false)
-    LocalDateTime transactionData;
+    @Column(name = "transactionDate", nullable = false)
+    private LocalDateTime transactionDate;
 
     @Column(name = "transactionType", nullable = false)
-    String transactionType;
+    private String transactionType;
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)

@@ -25,19 +25,19 @@ public class Actris {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
-    String name;
+    private String name;
 
     @Column(name = "followers", nullable = false)
-    int followers;
+    private int followers;
 
     @Column(name = "age", nullable = false)
-    int age;
+    private int age;
 
     @Column(name = "nationality")
-    String nationality;
+    private String nationality;
 
     @OneToOne(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cash cashAccount;

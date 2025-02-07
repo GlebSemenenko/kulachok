@@ -19,13 +19,13 @@ public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int transactionId;
+    private Long transactionId;
 
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "transactionDate", nullable = false)
-    LocalDateTime transactionDate;
+    @Column(name = "TransactionDate", nullable = false)
+    private LocalDateTime transactionDate;
 
     @ManyToOne
     @JoinColumn(name = "UserID")
