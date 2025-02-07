@@ -39,25 +39,10 @@ public class Actris {
     @Column(name = "nationality")
     String nationality;
 
-    @Column(name = "cashAccount", nullable = false)
-    BigDecimal cashAccount;
-
-    @Column(name = "biography")
-    String biography;
-
-    @Column(name = "profilePictureUrl")
-    String profilePictureUrl;
-
-    @Column(name = "createdAt", nullable = false)
-    LocalDateTime createdAt;
-
-    @Column(name = "updatedAt", nullable = false)
-    LocalDateTime updatedAt;
+    @OneToOne(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cash cashAccount;
 
     @OneToMany(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions;
-
-    @OneToOne(mappedBy = "actris", cascade = CascadeType.ALL,orphanRemoval = true)
-    private Cash cash;
+    private List<UserSubscription> subscriptions;
 
 }

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Cash")
@@ -39,20 +40,14 @@ public class Cash {
     @Column(name = "transactionType", nullable = false)
     String transactionType;
 
-    @Column(name = "createdAt", nullable = false)
-    LocalDateTime createdAt;
-
-    @Column(name = "updatedAt", nullable = false)
-    LocalDateTime updatedAt;
-
-    @OneToOne(mappedBy = "cash", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Transaction transaction;
-
     @OneToOne
-    @JoinColumn(name = "userId", unique = true, nullable = false)
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
     @OneToOne
-    @JoinColumn(name = "actrisId", unique = true, nullable = false)
+    @JoinColumn(name = "actris_id", unique = true)
     private Actris actris;
+
+    @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Transaction> transactions;
 }

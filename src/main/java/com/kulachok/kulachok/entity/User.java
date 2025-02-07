@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,11 +36,6 @@ public class User {
     @Column(name = "age", nullable = false)
     int age;
 
-    @Column(name = "cash_account", nullable = false)
-    BigInteger cashAccount;
-
-    @Column(name = "subscriptions")
-    String subscriptions;
 
     @Column(name = "email")
     String email;
@@ -48,21 +43,10 @@ public class User {
     @Column(name = "password", nullable = false)
     String password;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cash cashAccount;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions;
-
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
-    private Cash cash;
-
-    @ManyToMany(mappedBy = "subscribedActresses")
-    private List<User> subscribers;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_subscriptions",
-            joinColumns = @JoinColumn(name = "userId"),
-            inverseJoinColumns = @JoinColumn(name = "actrisId")
-    )
-    private List<Actris> subscribedActresses;
+    private List<UserSubscription> subscriptions;
 
 }

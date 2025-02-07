@@ -21,25 +21,22 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int transactionId;
 
+    @Column(name = "Description")
+    private String description;
+
     @Column(name = "transactionDate", nullable = false)
     LocalDateTime transactionDate;
 
-    @Column(name = "createdAt", nullable = false)
-    LocalDateTime createdAt;
-
-    @Column(name = "updatedAt", nullable = false)
-    LocalDateTime updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userId", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "UserID")
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "actrisId", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "ActrissID")
     private Actris actris;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cashId", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "CashID", nullable = false)
     private Cash cash;
 
 }

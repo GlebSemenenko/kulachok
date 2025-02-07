@@ -29,6 +29,14 @@ public class UserSubscription {
     @Column(name = "subscription_date")
     private LocalDateTime subscriptionDate;
 
+    @ManyToOne
+    @JoinColumn(name = "userId", insertable = false, updatable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "actrisId", insertable = false, updatable = false)
+    private Actris actris;
+
 }
 
 
