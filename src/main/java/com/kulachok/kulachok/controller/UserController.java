@@ -6,6 +6,7 @@ import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.CaseRepository;
 import com.kulachok.kulachok.repository.TransactionRepository;
 import com.kulachok.kulachok.repository.UserRepository;
+import com.kulachok.kulachok.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @Autowired
-    private CaseRepository caseRepository;
-
-    @Autowired
-    private TransactionRepository transactionRepository;
+    private UserService userService;
 
     @GetMapping("/kulachok/getUsers")
     public ResponseEntity<List<User>> getUsers() {
@@ -41,25 +39,8 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
             // Сохраняем пользователя
-            User savedUser = userRepository.save(user);
-
-            // Создаем новый объект Cash, связанный с сохраненным пользователем
-            Cash savedCash = new Cash();
-            savedCash.setUser(savedUser);
-            savedCash.setAmount(BigDecimal.ZERO);
-            savedCash.setDescription("Оплата за услуги");
-            savedCash.setTransactionType("DEBIT");
-            savedCash.setTransactionDate(LocalDateTime.now());
-            caseRepository.save(savedCash);
-
-            // Создаем новую транзакцию, связанную с сохраненным пользователем и кошельком
-            Transaction savedTransaction = new Transaction(); //transfer
-            savedTransaction.setDescription("При создании");
-            savedTransaction.setUser(savedUser);
-            savedTransaction.setCashAccount(savedCash);
-            transactionRepository.save(savedTransaction);
-
-            log.info("User saved: {}\nCash: {}\nTransaction: {}", savedUser, savedCash, savedTransaction);
+            User savedUser = userService.addUser(user);
+            log.info("User saved: {}", savedUser);
             return ResponseEntity.ok(savedUser);
         } catch (Exception e) {
             log.error("Error saving user: ", e);
