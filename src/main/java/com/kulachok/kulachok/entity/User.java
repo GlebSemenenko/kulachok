@@ -8,10 +8,11 @@ import lombok.Setter;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,13 +27,13 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "username", nullable = false, unique = true) // Добавлено поле
+    private String username;
 
-    @Column(name = "registrationDate", nullable = false)
-    private LocalDate registrationDate;
+    @Column(name = "registrationDate")
+    private LocalDate registrationDate = LocalDate.now();
 
     @Column(name = "age", nullable = false)
     private int age;

@@ -24,28 +24,34 @@ public class Cash {
      * Связи: (OTO User, OTO Actris, OTM Transaction)
      */
 
+    public Cash(String description, String transactionType, int id) {
+        this.description = description;
+        this.transactionType = transactionType;
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "transactionDate", nullable = false)
-    private LocalDateTime transactionDate;
-
-    @Column(name = "transactionType", nullable = false)
+    @Column(name = "transactionType")
     private String transactionType;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @Column(name = "transactionDate")
+    private LocalDateTime transactionDate = LocalDateTime.now();
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "user_id", unique = true, nullable = true)
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "actris_id", unique = true)
+    @OneToOne(optional = true)
+    @JoinColumn(name = "actris_id", unique = true, nullable = true)
     private Actris actris;
 
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -12,11 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 class UserDto {
-
-    private Integer id;
-    private String name;
-    private LocalDate registrationDate;
-    private Integer age;
-    private String cashAccount;
-    private String subscriptions;
+    private String username;
+    private int age;
+    private String email;
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Actris {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -39,6 +40,9 @@ public class Actris {
 
     @Column(name = "nationality")
     private String nationality;
+
+    @Column(name = "registrationDate", nullable = false)
+    private LocalDate registrationDate = LocalDate.now();
 
     @OneToOne(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cash cashAccount;

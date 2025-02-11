@@ -23,15 +23,17 @@ public class Transaction {
      * Связи: (MTO User, MTO Actris, MTO Cash)
      */
 
+    public Transaction(String description, int userId, int cashId) {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionId;
+    private int transactionId;
 
     @Column(name = "Description")
     private String description;
 
     @Column(name = "TransactionDate", nullable = false)
-    private LocalDateTime transactionDate;
+    private LocalDateTime transactionDate  = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "UserID")
@@ -43,6 +45,6 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "CashID", nullable = false)
-    private Cash cash;
+    private Cash cashAccount;
 
 }

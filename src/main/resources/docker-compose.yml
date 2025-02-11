@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: BD-KULACHOK
+    environment:
+      POSTGRES_PASSWORD: root  # Установите пароль для суперпользователя
+      POSTGRES_USER: postgres   # Установите имя пользователя
+    ports:
+      - "5432:5432"
