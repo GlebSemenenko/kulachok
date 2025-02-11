@@ -20,7 +20,8 @@ public class User {
 
     /**
      * User: Хранит данные пользователей
-     * (идентификатор, имя, дата регистрации, возраст, электронная почта, ссылка на кошелек).
+     * Поля: (идентификатор, имя, дата регистрации, возраст, электронная почта, ссылка на кошелек).
+     * Связи: (OTO CashAccount, OTM UserSubscription)
      */
 
     @Id
@@ -36,11 +37,11 @@ public class User {
     @Column(name = "age", nullable = false)
     private int age;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cash cashAccount;
-
     @Column(name = "email", unique = true)
     private String email;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Cash cashAccount;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSubscription> subscriptions;

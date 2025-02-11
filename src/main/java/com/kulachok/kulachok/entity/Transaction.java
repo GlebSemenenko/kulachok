@@ -17,6 +17,12 @@ import java.util.List;
 @AllArgsConstructor
 public class Transaction {
 
+    /**
+     * Transaction: хранение данных о переводах
+     * Поля: (Идентификатор транзакции, опиание, дата)
+     * Связи: (MTO User, MTO Actris, MTO Cash)
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long transactionId;

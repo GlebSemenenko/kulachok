@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class UserSubscription {
 
+    /**
+     * UserSubscription: Табилица саязи подписаки Users на Actris
+     * Поля: (Идентификатор, связь юзера, связь актрисы, время подписки)
+     * Связи: (MTO User, MTO Actris)
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
