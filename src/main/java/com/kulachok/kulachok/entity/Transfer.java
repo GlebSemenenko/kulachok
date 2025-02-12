@@ -22,6 +22,8 @@ public class Transfer {
      * Связи: (MTO User, MTO Actris, MTO Cash)
      */
 
+    public Transfer(String description, int userId, int cashId) {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

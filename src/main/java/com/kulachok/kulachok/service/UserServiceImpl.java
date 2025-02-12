@@ -3,7 +3,7 @@ package com.kulachok.kulachok.service;
 import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
-import com.kulachok.kulachok.repository.CaseRepository;
+import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private CaseRepository caseRepository;
+    private CashRepository cashRepository;
 
     @Autowired
     private TransferRepository transferRepository;
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         savedCash.setDescription("Оплата за услуги");
         savedCash.setTransferType("DEBIT");
         savedCash.setTransferDate(LocalDateTime.now());
-        caseRepository.save(savedCash);
+        cashRepository.save(savedCash);
 
         // Создаем новую транзакцию, связанную с сохраненным пользователем и кошельком
         Transfer savedTransfer = new Transfer();

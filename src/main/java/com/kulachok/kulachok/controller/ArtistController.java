@@ -2,8 +2,10 @@ package com.kulachok.kulachok.controller;
 
 import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.repository.ActrisRepository;
+import com.kulachok.kulachok.service.ActrisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,28 +13,37 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestMapping("/kulachok/actris") // Общий путь для контроллера
 public class ArtistController {
 
     // todo поменяй внедрение зависимости
     @Autowired
     private ActrisRepository actrisRepository;
+    @Autowired
+    private ActrisService actrisService;
 
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<List<Actris>> getActris() {
         List<Actris> actrisList = actrisRepository.findAll();
         return ResponseEntity.ok(actrisList);
     }
 
-    @PostMapping()
-    public void addArtist(@RequestBody Actris actris) {
-        log.info("Actris saved: " + actrisRepository.save(actris));
+    @PostMapping("/add")
+    public ResponseEntity<Actris> addArtist(@RequestBody Actris actris) {
+        if(actrisRepository.existsById(actris.getId())) {
+            Actris savedActris = actrisService.add(actris);
+            log.info("Actris saved: {}", savedActris);
+            return ResponseEntity.ok(savedActris);
+        }else {
+            log.error("Error saving actris: {} ", actris);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
-    @PutMapping("/{id}") // Метод для обновления актрисы по ID
-    public ResponseEntity<Actris> updateArtist(@PathVariable int id, @RequestBody Actris updatedActris) {
+    @PutMapping("/update/{id}") // Метод для обновления актрисы по ID
+    public ResponseEntity<Actris> updateArtist(@PathVariable int id, @RequestBody Actris actris) {
         if (actrisRepository.existsById(id)) {
-            updatedActris.setId(id); // Устанавливаем ID для обновления
-            Actris savedActris = actrisRepository.save(updatedActris);
+            Actris savedActris = actrisService.update(id, actris);
             log.info("Actris with id {} updated", id);
             return ResponseEntity.ok(savedActris); // Возвращаем обновленный объект
         } else {
@@ -41,7 +52,7 @@ public class ArtistController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteArtist(@PathVariable int id) {
         if (actrisRepository.existsById(id)) {
             actrisRepository.deleteById(id);

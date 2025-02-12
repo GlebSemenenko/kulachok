@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/users") // Общий путь для контроллера
+@RequestMapping("/kulachok/users") // Общий путь для контроллера
 public class UserController {
 
     // todo поменяй внедрение зависимости
@@ -23,13 +23,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/kulachok/getUsers")
+    @GetMapping("/get")
     public ResponseEntity<List<User>> getUsers() {
         List<User> users = userRepository.findAll();
         return ResponseEntity.ok(users);
     }
 
-    @PostMapping("/kulachok/addUser")
+    @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         if (userRepository.existsById(user.getId())) {
             User savedUser = userService.addUser(user);
@@ -41,7 +41,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("updateUser/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
         if (userRepository.existsById(id)) {
             User savedUser = userService.update(id, user);
@@ -54,7 +54,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
@@ -65,5 +65,4 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
 }
