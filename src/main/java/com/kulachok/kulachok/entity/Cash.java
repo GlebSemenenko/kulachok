@@ -46,12 +46,12 @@ public class Cash {
     @Column(name = "transferDate")
     private LocalDateTime transferDate = LocalDateTime.now();
 
-    @OneToOne(optional = true)
-    @JoinColumn(name = "user_id", unique = true, nullable = true)
+    @OneToOne
+    @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    @OneToOne(optional = true)
-    @JoinColumn(name = "actris_id", unique = true, nullable = true)
+    @OneToOne
+    @JoinColumn(name = "actris_id", unique = true)
     private Actris actris;
 
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)

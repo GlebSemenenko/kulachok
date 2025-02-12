@@ -41,14 +41,10 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @OneToOne(mappedBy = "user"
-            , cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}
-            , orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cash cashAccount;
 
-    @OneToMany(mappedBy = "user"
-            , cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}
-            , orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSubscription> subscriptions;
 
 }

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -45,4 +45,16 @@ public class UserServiceImpl implements UserService{
         transferRepository.save(savedTransfer);
         return savedUser;
     }
+
+    @Override
+    public User update(int id, User updatedUser) {
+        User existingUser = userRepository.findById(id).get();
+
+        existingUser.setUsername(updatedUser.getUsername());
+        existingUser.setAge(updatedUser.getAge());
+        existingUser.setEmail(updatedUser.getEmail());
+
+        return userRepository.save(existingUser);
+    }
+
 }

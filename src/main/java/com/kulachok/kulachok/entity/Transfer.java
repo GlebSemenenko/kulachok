@@ -22,8 +22,6 @@ public class Transfer {
      * Связи: (MTO User, MTO Actris, MTO Cash)
      */
 
-    public Transfer(String description, int userId, int cashId) {}
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -32,7 +30,7 @@ public class Transfer {
     private String description;
 
     @Column(name = "TransferDate", nullable = false)
-    private LocalDateTime transferDate  = LocalDateTime.now();
+    private LocalDateTime transferDate = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "UserID")
