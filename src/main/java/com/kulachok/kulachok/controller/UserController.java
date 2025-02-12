@@ -31,11 +31,11 @@ public class UserController {
 
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
-        if (userRepository.existsById(user.getId())) {
+        try {
             User savedUser = userService.addUser(user);
             log.info("User saved: {}", savedUser);
             return ResponseEntity.ok(savedUser);
-        } else {
+        } catch (Exception e){
             log.error("Error saving user: {}", user.getUsername());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

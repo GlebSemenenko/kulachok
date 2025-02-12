@@ -30,11 +30,11 @@ public class ArtistController {
 
     @PostMapping("/add")
     public ResponseEntity<Actris> addArtist(@RequestBody Actris actris) {
-        if(actrisRepository.existsById(actris.getId())) {
+        try {
             Actris savedActris = actrisService.add(actris);
             log.info("Actris saved: {}", savedActris);
             return ResponseEntity.ok(savedActris);
-        }else {
+        }catch (Exception e){
             log.error("Error saving actris: {} ", actris);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
