@@ -21,12 +21,12 @@ public class Cash {
     /**
      * Cash: Хранит данные о денежных операциях
      * Поля: (идентификатор, сумма, описание, дата, тип транзакции).
-     * Связи: (OTO User, OTO Actris, OTM Transaction)
+     * Связи: (OTO User, OTO Actris, OTM Ttransfer)
      */
 
-    public Cash(String description, String transactionType, int id) {
+    public Cash(String description, String transferType, int id) {
         this.description = description;
-        this.transactionType = transactionType;
+        this.transferType = transferType;
         this.id = id;
     }
 
@@ -40,11 +40,11 @@ public class Cash {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "transactionType")
-    private String transactionType;
+    @Column(name = "transferType")
+    private String transferType;
 
-    @Column(name = "transactionDate")
-    private LocalDateTime transactionDate = LocalDateTime.now();
+    @Column(name = "transferDate")
+    private LocalDateTime transferDate = LocalDateTime.now();
 
     @OneToOne(optional = true)
     @JoinColumn(name = "user_id", unique = true, nullable = true)
@@ -55,5 +55,5 @@ public class Cash {
     private Actris actris;
 
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions;
+    private List<Transfer> transfers;
 }

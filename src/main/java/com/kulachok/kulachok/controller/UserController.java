@@ -1,20 +1,16 @@
 package com.kulachok.kulachok.controller;
 
-import com.kulachok.kulachok.entity.Cash;
-import com.kulachok.kulachok.entity.Transaction;
 import com.kulachok.kulachok.entity.User;
-import com.kulachok.kulachok.repository.CaseRepository;
-import com.kulachok.kulachok.repository.TransactionRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import com.kulachok.kulachok.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -48,28 +44,37 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{id}") // Метод для обновления пользователя по ID
+    @PutMapping("updateUser/{id}")
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User updatedUser) {
         if (userRepository.existsById(id)) {
-            updatedUser.setId(id); // Устанавливаем ID для обновления
-            User savedUser = userRepository.save(updatedUser);
+            User existingUser = userRepository.findById(id).get();
+
+            // Обновляем поля пользователя
+            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setAge(updatedUser.getAge());
+            existingUser.setEmail(updatedUser.getEmail());
+
+            User savedUser = userRepository.save(existingUser);
             log.info("User with id {} updated", id);
-            return ResponseEntity.ok(savedUser); // Возвращаем обновленный объект
+            return ResponseEntity.ok(savedUser);
         } else {
             log.warn("User with id {} not found for update", id);
-            return ResponseEntity.notFound().build(); // Возвращаем статус 404 Not Found
+            return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{id}") // Метод для удаления пользователя по ID
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable int id) {
+
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
             log.info("User with id {} deleted", id);
-            return ResponseEntity.noContent().build(); // Возвращаем статус 204 No Content
+            return ResponseEntity.ok().build();
         } else {
             log.warn("User with id {} not found", id);
-            return ResponseEntity.notFound().build(); // Возвращаем статус 404 Not Found
+            return ResponseEntity.notFound().build();
         }
     }
+
 }

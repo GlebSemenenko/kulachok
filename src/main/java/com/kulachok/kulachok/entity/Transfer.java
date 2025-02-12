@@ -7,33 +7,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transfer")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+public class Transfer {
 
     /**
-     * Transaction: хранение данных о переводах
+     * Transfer: хранение данных о переводах
      * Поля: (Идентификатор транзакции, опиание, дата)
      * Связи: (MTO User, MTO Actris, MTO Cash)
      */
 
-    public Transaction(String description, int userId, int cashId) {}
+    public Transfer(String description, int userId, int cashId) {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int transactionId;
+    private int id;
 
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "TransactionDate", nullable = false)
-    private LocalDateTime transactionDate  = LocalDateTime.now();
+    @Column(name = "TransferDate", nullable = false)
+    private LocalDateTime transferDate  = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "UserID")

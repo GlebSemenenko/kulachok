@@ -1,10 +1,10 @@
 package com.kulachok.kulachok.service;
 
 import com.kulachok.kulachok.entity.Cash;
-import com.kulachok.kulachok.entity.Transaction;
+import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.CaseRepository;
-import com.kulachok.kulachok.repository.TransactionRepository;
+import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService{
     private CaseRepository caseRepository;
 
     @Autowired
-    private TransactionRepository transactionRepository;
+    private TransferRepository transferRepository;
 
     @Override
     public User addUser(User user) {
@@ -33,17 +33,16 @@ public class UserServiceImpl implements UserService{
         savedCash.setUser(savedUser);
         savedCash.setAmount(BigDecimal.ZERO);
         savedCash.setDescription("Оплата за услуги");
-        savedCash.setTransactionType("DEBIT");
-        savedCash.setTransactionDate(LocalDateTime.now());
+        savedCash.setTransferType("DEBIT");
+        savedCash.setTransferDate(LocalDateTime.now());
         caseRepository.save(savedCash);
 
         // Создаем новую транзакцию, связанную с сохраненным пользователем и кошельком
-        Transaction savedTransaction = new Transaction(); //transfer
-        savedTransaction.setDescription("При создании");
-        savedTransaction.setUser(savedUser);
-        savedTransaction.setCashAccount(savedCash);
-        transactionRepository.save(savedTransaction);
+        Transfer savedTransfer = new Transfer();
+        savedTransfer.setDescription("При создании");
+        savedTransfer.setUser(savedUser);
+        savedTransfer.setCashAccount(savedCash);
+        transferRepository.save(savedTransfer);
         return savedUser;
     }
-
 }
