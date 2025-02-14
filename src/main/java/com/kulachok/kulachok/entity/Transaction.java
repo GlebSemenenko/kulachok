@@ -43,6 +43,5 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "CashID", nullable = false)
-    private Cash cash;
-
+    private Cash cashAccount;
 }
