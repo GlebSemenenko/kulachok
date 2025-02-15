@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Table(name = "transfer")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Transfer {
 

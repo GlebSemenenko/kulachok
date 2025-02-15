@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.controller;
 
+import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.UserRepository;
 import com.kulachok.kulachok.service.UserService;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Slf4j
@@ -32,7 +34,7 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
-            User savedUser = userService.addUser(user);
+            User savedUser = userService.add(user);
 //            log.info("User saved: {}", savedUser);
             return ResponseEntity.ok(savedUser);
         } catch (Exception e){
@@ -53,6 +55,15 @@ public class UserController {
         }
     }
 
+//    @PutMapping("/update/cash/{id}")
+//    public ResponseEntity<Cash> updateCash(@PathVariable int id, @RequestBody BigDecimal amount) {
+//        if (userRepository.existsById(id)) {
+//            Cash savedCash = userService.updateCash(id, amount);
+//            return ResponseEntity.ok(savedCash);
+//        }else {
+//        return ResponseEntity.notFound().build();
+//        }
+//    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
@@ -65,4 +76,6 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 }

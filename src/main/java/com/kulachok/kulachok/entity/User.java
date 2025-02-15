@@ -15,8 +15,6 @@ import java.util.List;
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class User {
 
     /**
@@ -54,7 +52,6 @@ public class User {
         this.username = username;
         this.age = age;
         this.email = email;
-        this.registrationDate = LocalDate.now();
     }
 
     public User(int id, String username, LocalDate registrationDate, int age, String email, Cash cashAccount, List<UserSubscription> subscriptions) {

@@ -15,7 +15,6 @@ import java.util.List;
 @Table(name = "actriss")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class Actris {
 
