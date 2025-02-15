@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public interface UserService {
     User add(@RequestBody User user);
 
-    User update(@PathVariable int id, @RequestBody User updatedUser);
+    User update(@PathVariable int id, @RequestBody User user);
 
-    Cash updateCash(@PathVariable int userId, @RequestBody BigDecimal amount);
+    Cash updateCash(@PathVariable int id, @RequestBody Cash cash);
 }

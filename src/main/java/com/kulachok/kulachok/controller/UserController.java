@@ -55,15 +55,16 @@ public class UserController {
         }
     }
 
-//    @PutMapping("/update/cash/{id}")
-//    public ResponseEntity<Cash> updateCash(@PathVariable int id, @RequestBody BigDecimal amount) {
-//        if (userRepository.existsById(id)) {
-//            Cash savedCash = userService.updateCash(id, amount);
-//            return ResponseEntity.ok(savedCash);
-//        }else {
-//        return ResponseEntity.notFound().build();
-//        }
-//    }
+    @PutMapping("/update/cash/{id}")
+    public ResponseEntity<Cash> updateCash(@PathVariable int id
+            , @RequestBody Cash cash) {
+        if (userRepository.existsById(id)) {
+            Cash savedCash = userService.updateCash(id, cash);
+            return ResponseEntity.ok(savedCash);
+        }else {
+        return ResponseEntity.notFound().build();
+        }
+    }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {

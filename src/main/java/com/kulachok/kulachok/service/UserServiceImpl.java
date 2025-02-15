@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -60,17 +58,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Cash updateCash(int userId, BigDecimal amount) {
-        User user = userRepository.findById(userId)
+    public Cash updateCash(int userId, Cash user) {
+        User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Cash cash = cashRepository.findByUser(user);
+        Cash cash = cashRepository.findByUser(existingUser);
         if (cash == null) {
             throw new RuntimeException("Cash account not found");
         }
 
         // Добавляем сумму
-        cash.setAmount(cash.getAmount().add(amount));
+        cash.setAmount(cash.getAmount().add(user.getAmount())); // Добавляем переданную сумму
 
         // Сохраняем обновленный Cash
         return cashRepository.save(cash);
