@@ -33,10 +33,10 @@ public class UserController {
     public ResponseEntity<User> addUser(@RequestBody User user) {
         try {
             User savedUser = userService.addUser(user);
-            log.info("User saved: {}", savedUser);
+//            log.info("User saved: {}", savedUser);
             return ResponseEntity.ok(savedUser);
         } catch (Exception e){
-            log.error("Error saving user: {}", user.getUsername());
+//            log.error("Error saving user: {}", user.getUsername());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -45,10 +45,10 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
         if (userRepository.existsById(id)) {
             User savedUser = userService.update(id, user);
-            log.info("User with id {} updated", id);
+//            log.info("User with id {} updated", id);
             return ResponseEntity.ok(savedUser);
         } else {
-            log.warn("User with id {} not found for update", id);
+//            log.warn("User with id {} not found for update", id);
             return ResponseEntity.notFound().build();
         }
     }
@@ -58,10 +58,10 @@ public class UserController {
     public ResponseEntity<Void> delete(@PathVariable int id) {
         if (userRepository.existsById(id)) {
             userRepository.deleteById(id);
-            log.info("User with id {} deleted", id);
+//            log.info("User with id {} deleted", id);
             return ResponseEntity.ok().build();
         } else {
-            log.warn("User with id {} not found", id);
+//            log.warn("User with id {} not found", id);
             return ResponseEntity.notFound().build();
         }
     }
