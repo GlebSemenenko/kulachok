@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -45,13 +46,16 @@ public class Cash {
     private LocalDateTime transferDate = LocalDateTime.now();
 
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
+    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "actris_id", unique = true)
     private Actris actris;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Transfer> transfers;
 
