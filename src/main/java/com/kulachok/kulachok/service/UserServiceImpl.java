@@ -8,8 +8,10 @@ import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 @Service
@@ -57,20 +59,47 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(existingUser);
     }
 
+    @Transactional
     @Override
     public Cash updateCash(int userId, Cash user) {
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
 
         Cash cash = cashRepository.findByUser(existingUser);
         if (cash == null) {
             throw new RuntimeException("Cash account not found");
         }
 
-        // Добавляем сумму
-        cash.setAmount(cash.getAmount().add(user.getAmount())); // Добавляем переданную сумму
+        BigDecimal amountCash = cash.getAmount();
+        BigDecimal amountUser = user.getAmount();
 
-        // Сохраняем обновленный Cash
-        return cashRepository.save(cash);
+        cash.setAmount(amountCash.add(amountUser));
+        cash = cashRepository.save(cash);
+
+        Transfer transfer = new Transfer();
+
+
+        if (amountCash.compareTo(amountUser) < 0) {
+            transfer.setDescription("Уменьшение баланса");
+            transfer.setSumTransfer(amountUser); // Установите разницу как уменьшенную сумму
+            transfer.setAllSumTransfer(cash.getAmount());
+        }
+        else if (amountCash.compareTo(amountUser) > 0) {
+            transfer.setDescription("Увеличение баланса");
+            transfer.setSumTransfer(amountUser);
+            transfer.setAllSumTransfer(cash.getAmount());
+        }
+        else {
+            transfer.setDescription("Неизвестная операция");
+            transfer.setSumTransfer(amountUser);
+            transfer.setAllSumTransfer(cash.getAmount());
+        }
+
+        transfer.setUser(existingUser);
+        transfer.setCashAccount(cash);
+        transferRepository.save(transfer);
+
+        return cash;
     }
 }

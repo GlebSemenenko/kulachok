@@ -38,7 +38,6 @@ public class ActrisServiceImpl implements ActrisService {
         savedCash.setTransferDate(LocalDateTime.now());
         cashRepository.save(savedCash);
 
-        // Создаем новую транзакцию, связанную с сохраненной актрисой и кошельком
         Transfer savedTransfer = new Transfer();
         savedTransfer.setDescription("При создании");
         savedTransfer.setActris(savedActris);

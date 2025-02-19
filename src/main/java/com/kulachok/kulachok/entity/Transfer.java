@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Transfer {
 
     /**
@@ -31,6 +33,13 @@ public class Transfer {
     @Column(name = "TransferDate", nullable = false)
     private LocalDateTime transferDate = LocalDateTime.now();
 
+    @Column(name = "SumTransfer")
+    private BigDecimal sumTransfer;
+
+    //todo -> изменение названия на пользователя
+    @Column(name = "AllSumTransfer")
+    private BigDecimal AllSumTransfer;
+
     @ManyToOne
     @JoinColumn(name = "UserID")
     private User user;
@@ -42,67 +51,5 @@ public class Transfer {
     @ManyToOne
     @JoinColumn(name = "CashID", nullable = false)
     private Cash cashAccount;
-
-    // Конструкторы
-    public Transfer() {
-    }
-
-    public Transfer(String description, LocalDateTime transferDate, User user, Actris actris, Cash cashAccount) {
-        this.description = description;
-        this.transferDate = transferDate;
-        this.user = user;
-        this.actris = actris;
-        this.cashAccount = cashAccount;
-    }
-
-    // Геттеры
-    public int getId() {
-        return id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public LocalDateTime getTransferDate() {
-        return transferDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Actris getActris() {
-        return actris;
-    }
-
-    public Cash getCashAccount() {
-        return cashAccount;
-    }
-
-    // Сеттеры
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public void setTransferDate(LocalDateTime transferDate) {
-        this.transferDate = transferDate;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public void setActris(Actris actris) {
-        this.actris = actris;
-    }
-
-    public void setCashAccount(Cash cashAccount) {
-        this.cashAccount = cashAccount;
-    }
 
 }
