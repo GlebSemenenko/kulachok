@@ -42,11 +42,9 @@ public class Cash {
     private LocalDateTime transferDate = LocalDateTime.now();
 
     @OneToOne
-    @JsonIgnore
     @JoinColumn(name = "user_id", unique = true)
     private User user;
 
-    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "actris_id", unique = true)
     private Actris actris;

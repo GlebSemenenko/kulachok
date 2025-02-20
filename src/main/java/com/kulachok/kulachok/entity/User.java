@@ -18,7 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements CashAccountHolder {
 
     /**
      * User: Хранит данные пользователей
@@ -33,14 +33,14 @@ public class User {
     @Column(name = "username", nullable = false, unique = true) // Добавлено поле
     private String username;
 
-    @Column(name = "registrationDate")
-    private LocalDate registrationDate = LocalDate.now();
-
     @Column(name = "age", nullable = false)
     private int age;
 
     @Column(name = "email", unique = true)
     private String email;
+
+    @Column(name = "registrationDate")
+    private LocalDate registrationDate = LocalDate.now();
 
     @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

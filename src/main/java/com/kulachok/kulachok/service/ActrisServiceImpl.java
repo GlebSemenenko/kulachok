@@ -17,21 +17,23 @@ import java.time.LocalDateTime;
 @Service
 public class ActrisServiceImpl implements ActrisService {
 
-    @Autowired
-    private ActrisRepository actrisRepository;
+    private final ActrisRepository actrisRepository;
 
-    @Autowired
-    private TransferRepository transferRepository;
+    private final TransferRepository transferRepository;
 
-    @Autowired
-    private CashRepository cashRepository;
+    private final CashRepository cashRepository;
+
+    public ActrisServiceImpl(ActrisRepository actrisRepository, TransferRepository transferRepository, CashRepository cashRepository) {
+        this.actrisRepository = actrisRepository;
+        this.transferRepository = transferRepository;
+        this.cashRepository = cashRepository;
+    }
 
     @Override
     public Actris add(Actris actris) {
         Actris savedActris = actrisRepository.save(actris);
 
         Cash savedCash = new Cash();
-        savedCash.setActris(savedActris);
         savedCash.setAmount(BigDecimal.ZERO);
         savedCash.setDescription("Оплата за услуги");
         savedCash.setTransferType("DEBIT");

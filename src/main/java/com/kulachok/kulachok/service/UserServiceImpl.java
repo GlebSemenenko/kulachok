@@ -1,8 +1,11 @@
 package com.kulachok.kulachok.service;
 
+import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.entity.Cash;
+import com.kulachok.kulachok.entity.CashAccountHolder;
 import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
+import com.kulachok.kulachok.repository.ActrisRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
@@ -17,14 +20,17 @@ import java.time.LocalDateTime;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private CashRepository cashRepository;
+    private final CashRepository cashRepository;
 
-    @Autowired
-    private TransferRepository transferRepository;
+    private final TransferRepository transferRepository;
+
+    public UserServiceImpl(UserRepository userRepository, CashRepository cashRepository, TransferRepository transferRepository) {
+        this.userRepository = userRepository;
+        this.cashRepository = cashRepository;
+        this.transferRepository = transferRepository;
+    }
 
     @Override
     public User add(User user) {
@@ -32,7 +38,6 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         Cash savedCash = new Cash();
-        savedCash.setUser(savedUser);
         savedCash.setAmount(BigDecimal.ZERO);
         savedCash.setDescription("Оплата за услуги");
         savedCash.setTransferType("DEBIT");
@@ -57,49 +62,5 @@ public class UserServiceImpl implements UserService {
         existingUser.setEmail(updatedUser.getEmail());
 
         return userRepository.save(existingUser);
-    }
-
-    @Transactional
-    @Override
-    public Cash updateCash(int userId, Cash user) {
-        User existingUser = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-
-        Cash cash = cashRepository.findByUser(existingUser);
-        if (cash == null) {
-            throw new RuntimeException("Cash account not found");
-        }
-
-        BigDecimal amountCash = cash.getAmount();
-        BigDecimal amountUser = user.getAmount();
-
-        cash.setAmount(amountCash.add(amountUser));
-        cash = cashRepository.save(cash);
-
-        Transfer transfer = new Transfer();
-
-
-        if (amountCash.compareTo(amountUser) < 0) {
-            transfer.setDescription("Уменьшение баланса");
-            transfer.setSumTransfer(amountUser); // Установите разницу как уменьшенную сумму
-            transfer.setAllSumTransfer(cash.getAmount());
-        }
-        else if (amountCash.compareTo(amountUser) > 0) {
-            transfer.setDescription("Увеличение баланса");
-            transfer.setSumTransfer(amountUser);
-            transfer.setAllSumTransfer(cash.getAmount());
-        }
-        else {
-            transfer.setDescription("Неизвестная операция");
-            transfer.setSumTransfer(amountUser);
-            transfer.setAllSumTransfer(cash.getAmount());
-        }
-
-        transfer.setUser(existingUser);
-        transfer.setCashAccount(cash);
-        transferRepository.save(transfer);
-
-        return cash;
     }
 }
