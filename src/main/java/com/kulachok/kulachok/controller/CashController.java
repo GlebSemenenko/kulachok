@@ -5,12 +5,9 @@ import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.CashAccountHolder;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.ActrisRepository;
-import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import com.kulachok.kulachok.service.CashService;
-import com.kulachok.kulachok.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/kulachok/cash")
 public class CashController {
 
-    // todo поменяй внедрение зависимости
     private final UserRepository userRepository;
 
     private final CashService cashService;

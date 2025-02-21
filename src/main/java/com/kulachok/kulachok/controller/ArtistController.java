@@ -4,7 +4,6 @@ import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.repository.ActrisRepository;
 import com.kulachok.kulachok.service.ActrisService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/kulachok/actris") // Общий путь для контроллера
+@RequestMapping("/kulachok/actris")
 public class ArtistController {
 
     // todo поменяй внедрение зависимости
@@ -48,10 +47,10 @@ public class ArtistController {
         if (actrisRepository.existsById(id)) {
             Actris savedActris = actrisService.update(id, actris);
             log.info("Actris with id {} updated", id);
-            return ResponseEntity.ok(savedActris); // Возвращаем обновленный объект
+            return ResponseEntity.ok(savedActris);
         } else {
             log.warn("Actris with id {} not found for update", id);
-            return ResponseEntity.notFound().build(); // Возвращаем статус 404 Not Found
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -60,10 +59,10 @@ public class ArtistController {
         if (actrisRepository.existsById(id)) {
             actrisRepository.deleteById(id);
             log.info("Actris with id {} deleted", id);
-            return ResponseEntity.noContent().build(); // Возвращаем статус 204 No Content
+            return ResponseEntity.noContent().build();
         } else {
             log.warn("Actris with id {} not found", id);
-            return ResponseEntity.notFound().build(); // Возвращаем статус 404 Not Found
+            return ResponseEntity.notFound().build();
         }
     }
 }

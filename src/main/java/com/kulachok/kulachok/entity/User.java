@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -30,7 +28,7 @@ public class User implements CashAccountHolder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "username", nullable = false, unique = true) // Добавлено поле
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @Column(name = "age", nullable = false)

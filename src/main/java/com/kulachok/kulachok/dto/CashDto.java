@@ -10,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CashDto {
-
     private Integer id;
     private Integer dollar;
 }

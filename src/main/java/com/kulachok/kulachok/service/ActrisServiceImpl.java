@@ -3,12 +3,9 @@ package com.kulachok.kulachok.service;
 import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.Transfer;
-import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.ActrisRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
-import org.apache.catalina.webresources.CachedResource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,7 +20,9 @@ public class ActrisServiceImpl implements ActrisService {
 
     private final CashRepository cashRepository;
 
-    public ActrisServiceImpl(ActrisRepository actrisRepository, TransferRepository transferRepository, CashRepository cashRepository) {
+    public ActrisServiceImpl(ActrisRepository actrisRepository
+            , TransferRepository transferRepository
+            , CashRepository cashRepository) {
         this.actrisRepository = actrisRepository;
         this.transferRepository = transferRepository;
         this.cashRepository = cashRepository;

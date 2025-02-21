@@ -23,6 +23,7 @@ public class Transfer {
      * Связи: (MTO User, MTO Actris, MTO Cash)
      */
 
+    //TODO переделать на long
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;

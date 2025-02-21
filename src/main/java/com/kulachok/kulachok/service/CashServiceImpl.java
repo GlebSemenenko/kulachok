@@ -10,25 +10,22 @@ import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 
 @Slf4j
 @Service
 public class CashServiceImpl implements CashService {
-
     private final UserRepository userRepository;
-
     private final CashRepository cashRepository;
-
     private final TransferRepository transferRepository;
-
     private final ActrisRepository actrisRepository;
 
-    public CashServiceImpl(UserRepository userRepository, CashRepository cashRepository, TransferRepository transferRepository, ActrisRepository actrisRepository) {
+    public CashServiceImpl(UserRepository userRepository
+            , CashRepository cashRepository
+            , TransferRepository transferRepository
+            , ActrisRepository actrisRepository) {
         this.userRepository = userRepository;
         this.cashRepository = cashRepository;
         this.transferRepository = transferRepository;
@@ -36,45 +33,55 @@ public class CashServiceImpl implements CashService {
     }
 
     @Override
-    public Cash updateCash(int id, Cash userCash, Class<? extends CashAccountHolder> userType) {
-        CashAccountHolder existingUser;
+    public Cash updateCash(int id, Cash userCash
+            , Class<? extends CashAccountHolder> userType) {
+        CashAccountHolder existingUser = getExistingUser(id, userType);
+        Cash cash = getCashAccount(existingUser, userType);
+        BigDecimal newBalance = cash.getAmount().add(userCash.getAmount());
 
-        Cash cash;
+        if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+            throw new RuntimeException("Insufficient funds: balance cannot be negative");
+        }
 
+        cash.setAmount(newBalance);
+        cash = cashRepository.save(cash);
+        log.info("Cash account updated");
+
+        saveTransfer(userCash, newBalance, existingUser, cash);
+
+        return cash;
+    }
+
+    private CashAccountHolder getExistingUser(int id, Class<? extends CashAccountHolder> userType) {
         if (User.class.isAssignableFrom(userType)) {
-            existingUser = userRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            cash = cashRepository.findByUser((User) existingUser);
+            return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         } else if (Actris.class.isAssignableFrom(userType)) {
-            existingUser = actrisRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Actress not found"));
-            cash = cashRepository.findByActris((Actris) existingUser);
+            return actrisRepository.findById(id).orElseThrow(() -> new RuntimeException("Actress not found"));
         } else {
             throw new RuntimeException("Unknown user type");
         }
+    }
 
-        if (cash == null) {
-            throw new RuntimeException("Cash account not found");
+    private Cash getCashAccount(CashAccountHolder existingUser, Class<? extends CashAccountHolder> userType) {
+        if (User.class.isAssignableFrom(userType)) {
+            return cashRepository.findByUser((User) existingUser);
+        } else if (Actris.class.isAssignableFrom(userType)) {
+            return cashRepository.findByActris((Actris) existingUser);
+        } else {
+            throw new RuntimeException("Unknown user type");
         }
+    }
 
-        // Обновление баланса
-        BigDecimal amountCash = cash.getAmount();
-        BigDecimal amountUser = userCash.getAmount();
-
-        cash.setAmount(amountCash.add(amountUser));
-        cash = cashRepository.save(cash);
-
-
+    private void saveTransfer(Cash userCash, BigDecimal newBalance, CashAccountHolder existingUser, Cash cash) {
         Transfer transfer = new Transfer();
-        transfer.setDescription(
-                amountUser.compareTo(BigDecimal.ZERO) < 0
-                        ? "Уменьшение баланса"
-                        : amountUser.compareTo(BigDecimal.ZERO) > 0
-                        ? "Увеличение баланса"
-                        : "Баланс не изменился"
-        );
-        transfer.setSumTransfer(amountUser);
-        transfer.setAllSumTransfer(cash.getAmount());
+        transfer.setDescription(userCash.getAmount().compareTo(BigDecimal.ZERO) < 0
+                ? "Balance decreased"
+                : userCash.getAmount().compareTo(BigDecimal.ZERO) > 0
+                ? "Balance increased"
+                : "The balance has not changed");
+        transfer.setSumTransfer(userCash.getAmount());
+        transfer.setAllSumTransfer(newBalance);
+        transfer.setCashAccount(cash);
 
         if (existingUser instanceof User) {
             transfer.setUser((User) existingUser);
@@ -82,11 +89,7 @@ public class CashServiceImpl implements CashService {
             transfer.setActris((Actris) existingUser);
         }
 
-        transfer.setCashAccount(cash);
         transferRepository.save(transfer);
-
-        return cash;
     }
-
 
 }
