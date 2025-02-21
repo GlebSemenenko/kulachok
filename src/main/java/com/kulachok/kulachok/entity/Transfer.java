@@ -51,6 +51,5 @@ public class Transfer {
 
     @ManyToOne
     @JoinColumn(name = "CashID", nullable = false)
-    private Cash cash;
-
+    private Cash cashAccount;
 }
