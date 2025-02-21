@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,10 +37,12 @@ public class UserSubscription {
     private LocalDateTime subscriptionDate = LocalDateTime.now();
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "UserID", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "ActrisID", insertable = false, updatable = false)
     private Actris actris;
 

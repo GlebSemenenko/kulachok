@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,31 +15,31 @@ import java.util.List;
 @Table(name = "Cash")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Cash {
 
     /**
      * Cash: Хранит данные о денежных операциях
      * Поля: (идентификатор, сумма, описание, дата, тип транзакции).
-     * Связи: (OTO User, OTO Actris, OTM Transaction)
+     * Связи: (OTO User, OTO Actris, OTM Ttransfer)
      */
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name = "amount", nullable = false)
+    @Column(name = "amount")
     private BigDecimal amount;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "transactionDate", nullable = false)
-    private LocalDateTime transactionDate;
+    @Column(name = "transferType")
+    private String transferType;
 
-    @Column(name = "transactionType", nullable = false)
-    private String transactionType;
+    @Column(name = "transferDate")
+    private LocalDateTime transferDate = LocalDateTime.now();
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
@@ -48,6 +49,8 @@ public class Cash {
     @JoinColumn(name = "actris_id", unique = true)
     private Actris actris;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Transaction> transactions;
+    private List<Transfer> transfers;
+
 }

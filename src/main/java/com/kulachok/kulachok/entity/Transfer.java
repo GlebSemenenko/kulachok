@@ -6,32 +6,40 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
-@Table(name = "transactions")
+@Table(name = "transfer")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Transaction {
+@NoArgsConstructor
+public class Transfer {
 
     /**
-     * Transaction: хранение данных о переводах
+     * Transfer: хранение данных о переводах
      * Поля: (Идентификатор транзакции, опиание, дата)
      * Связи: (MTO User, MTO Actris, MTO Cash)
      */
 
+    //TODO переделать на long
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long transactionId;
+    private int id;
 
     @Column(name = "Description")
     private String description;
 
-    @Column(name = "TransactionDate", nullable = false)
-    private LocalDateTime transactionDate;
+    @Column(name = "TransferDate", nullable = false)
+    private LocalDateTime transferDate = LocalDateTime.now();
+
+    @Column(name = "SumTransfer")
+    private BigDecimal sumTransfer;
+
+    //todo -> изменение названия на пользователя
+    @Column(name = "AllSumTransfer")
+    private BigDecimal AllSumTransfer;
 
     @ManyToOne
     @JoinColumn(name = "UserID")
@@ -43,5 +51,6 @@ public class Transaction {
 
     @ManyToOne
     @JoinColumn(name = "CashID", nullable = false)
-    private Cash cashAccount;
+    private Cash cash;
+
 }

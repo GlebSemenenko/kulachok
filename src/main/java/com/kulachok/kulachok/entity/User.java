@@ -1,12 +1,12 @@
 package com.kulachok.kulachok.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class User implements CashAccountHolder {
 
     /**
      * User: Хранит данные пользователей
@@ -26,13 +26,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
-
-    @Column(name = "registrationDate", nullable = false)
-    private LocalDate registrationDate;
 
     @Column(name = "age", nullable = false)
     private int age;
@@ -40,9 +37,14 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
+    @Column(name = "registrationDate")
+    private LocalDate registrationDate = LocalDate.now();
+
+    @JsonIgnore
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cash cashAccount;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSubscription> subscriptions;
 
