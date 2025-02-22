@@ -1,10 +1,13 @@
 package com.kulachok.kulachok.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,40 +19,35 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Transfer {
-
-    /**
-     * Transfer: хранение данных о переводах
-     * Поля: (Идентификатор транзакции, опиание, дата)
-     * Связи: (MTO User, MTO Actris, MTO Cash)
-     */
-
-    //TODO переделать на long
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "Description")
-    private String description;
-
-    @Column(name = "TransferDate", nullable = false)
-    private LocalDateTime transferDate = LocalDateTime.now();
-
-    @Column(name = "SumTransfer")
+    @Column(name = "sum_transfer")
     private BigDecimal sumTransfer;
 
-    //todo -> изменение названия на пользователя
-    @Column(name = "AllSumTransfer")
-    private BigDecimal AllSumTransfer;
+    @Column(name = "all_sum_transfer")
+    private BigDecimal allSumTransfer;
+
+    @Column(name = "transfer_date", nullable = false)
+    private LocalDateTime transferDate = LocalDateTime.now();
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne
-    @JoinColumn(name = "UserID")
-    private User user;
+    @JsonIgnore
+    @JoinColumn(name = "cashid", nullable = false)
+    private Cash cashAccount;
 
     @ManyToOne
-    @JoinColumn(name = "ActrissID")
+    @JsonIgnore
+    @JoinColumn(name = "actrissid")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Actris actris;
 
     @ManyToOne
-    @JoinColumn(name = "CashID", nullable = false)
-    private Cash cashAccount;
+    @JsonIgnore
+    @JoinColumn(name = "userid")
+    private User user;
 }

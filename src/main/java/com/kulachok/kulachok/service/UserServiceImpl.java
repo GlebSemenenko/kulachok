@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         User savedUser = userRepository.save(user);
 
         Cash savedCash = new Cash();
+        savedCash.setUser(savedUser);
         savedCash.setAmount(BigDecimal.ZERO);
         savedCash.setDescription("Оплата за услуги");
         savedCash.setTransferType("DEBIT");
@@ -41,8 +42,8 @@ public class UserServiceImpl implements UserService {
         cashRepository.save(savedCash);
 
         Transfer savedTransfer = new Transfer();
-        savedTransfer.setDescription("При создании");
         savedTransfer.setUser(savedUser);
+        savedTransfer.setDescription("При создании");
         savedTransfer.setCashAccount(savedCash);
         transferRepository.save(savedTransfer);
         return savedUser;

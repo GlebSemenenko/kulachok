@@ -18,13 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cash {
-
-    /**
-     * Cash: Хранит данные о денежных операциях
-     * Поля: (идентификатор, сумма, описание, дата, тип транзакции).
-     * Связи: (OTO User, OTO Actris, OTM Ttransfer)
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -41,16 +34,18 @@ public class Cash {
     @Column(name = "transferDate")
     private LocalDateTime transferDate = LocalDateTime.now();
 
-    @OneToOne
-    @JoinColumn(name = "user_id", unique = true)
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
-    @JoinColumn(name = "actris_id", unique = true)
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "actris_id")
     private Actris actris;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Transfer> transfers;
-
 }
+

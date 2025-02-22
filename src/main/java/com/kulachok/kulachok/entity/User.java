@@ -18,12 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 public class User implements CashAccountHolder {
 
-    /**
-     * User: Хранит данные пользователей
-     * Поля: (идентификатор, имя, дата регистрации, возраст, электронная почта, ссылка на кошелек).
-     * Связи: (OTO CashAccount, OTM UserSubscription)
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -40,9 +34,10 @@ public class User implements CashAccountHolder {
     @Column(name = "registrationDate")
     private LocalDate registrationDate = LocalDate.now();
 
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cash cashAccount;
+    private List<Cash> cashAccount;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

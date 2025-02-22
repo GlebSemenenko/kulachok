@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -33,15 +34,15 @@ public class CashServiceImpl implements CashService {
     }
 
     @Override
-    public Cash updateCash(int id, Cash userCash
-            , Class<? extends CashAccountHolder> userType) {
+    public Cash updateCash(int id, Cash userCash, Class<? extends CashAccountHolder> userType) {
         CashAccountHolder existingUser = getExistingUser(id, userType);
         Cash cash = getCashAccount(existingUser, userType);
-        BigDecimal newBalance = cash.getAmount().add(userCash.getAmount());
+        BigDecimal newBalance = getBigDecimal(userCash, existingUser, cash);
 
         if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
             throw new RuntimeException("Insufficient funds: balance cannot be negative");
         }
+
 
         cash.setAmount(newBalance);
         cash = cashRepository.save(cash);
@@ -50,6 +51,19 @@ public class CashServiceImpl implements CashService {
         saveTransfer(userCash, newBalance, existingUser, cash);
 
         return cash;
+    }
+
+    private static BigDecimal getBigDecimal(Cash userCash, CashAccountHolder existingUser, Cash cash) {
+        BigDecimal newBalance;
+
+        if (existingUser instanceof User) {
+            newBalance = cash.getAmount().add(userCash.getAmount());
+        } else if (existingUser instanceof Actris) {
+            newBalance = cash.getAmount().subtract(userCash.getAmount());
+        } else {
+            throw new RuntimeException("Unknown user type");
+        }
+        return newBalance;
     }
 
     private CashAccountHolder getExistingUser(int id, Class<? extends CashAccountHolder> userType) {
@@ -63,14 +77,21 @@ public class CashServiceImpl implements CashService {
     }
 
     private Cash getCashAccount(CashAccountHolder existingUser, Class<? extends CashAccountHolder> userType) {
+        List<Cash> cashList;
+
         if (User.class.isAssignableFrom(userType)) {
-            return cashRepository.findByUser((User) existingUser);
+            cashList = cashRepository.findByUser((User) existingUser);
         } else if (Actris.class.isAssignableFrom(userType)) {
-            return cashRepository.findByActris((Actris) existingUser);
+            cashList = cashRepository.findByActris((Actris) existingUser);
         } else {
             throw new RuntimeException("Unknown user type");
         }
+
+        return cashList.stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Cash account not found"));
     }
+
 
     private void saveTransfer(Cash userCash, BigDecimal newBalance, CashAccountHolder existingUser, Cash cash) {
         Transfer transfer = new Transfer();
@@ -90,6 +111,13 @@ public class CashServiceImpl implements CashService {
         }
 
         transferRepository.save(transfer);
+    }
+
+    public Cash createCash(Actris actris, int cashId) {
+        User user = userRepository.findById(cashId).orElseThrow(() -> new RuntimeException("User not found"));
+        Cash cash = (Cash) cashRepository.findByUser(user);
+        cash.setActris(actris);
+        return cashRepository.save(cash);
     }
 
 }

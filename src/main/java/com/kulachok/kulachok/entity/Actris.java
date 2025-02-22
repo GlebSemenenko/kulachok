@@ -17,13 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Actris implements CashAccountHolder {
-
-    /**
-     * Actris: Хранит данные актрис
-     * Поля: (идентификатор, имя, подписчики, возраст, национальность, ссылка на кошелек).
-     * Связи: (OTO CashAccount, OTM UserSubscription)
-     */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -40,12 +33,12 @@ public class Actris implements CashAccountHolder {
     @Column(name = "followers", nullable = false)
     private int followers;
 
-    @Column(name = "registrationDate", nullable = false)
+    @Column(name = "registrationDate")
     private LocalDate registrationDate = LocalDate.now();
 
     @JsonIgnore
-    @OneToOne(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Cash cashAccount;
+    @OneToMany(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Cash> cashAccount;
 
     @JsonIgnore
     @OneToMany(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
