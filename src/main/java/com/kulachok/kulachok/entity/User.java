@@ -34,13 +34,16 @@ public class User implements CashAccountHolder {
     @Column(name = "registrationDate")
     private LocalDate registrationDate = LocalDate.now();
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Actris actris;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JsonIgnore
+    @JoinColumn(name = "cash_id", referencedColumnName = "id")
+    private Cash cashAccount;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Cash> cashAccount;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSubscription> subscriptions;
-
 }

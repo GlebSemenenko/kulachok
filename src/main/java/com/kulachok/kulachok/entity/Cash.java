@@ -39,13 +39,14 @@ public class Cash {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    @OneToOne
     @JsonIgnore
     @JoinColumn(name = "actris_id")
-    private Actris actris;
+    private Actris actris;  // Это остаётся ManyToOne
 
     @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Transfer> transfers;
 }
+
 

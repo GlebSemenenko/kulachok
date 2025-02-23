@@ -39,6 +39,7 @@ public class ActrisServiceImpl implements ActrisService{
         // Сохраняем новую актрису
         Actris savedActris = actrisRepository.save(actris);
 
+
         // Находим пользователя по userId
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -80,4 +81,5 @@ public class ActrisServiceImpl implements ActrisService{
 
         return actrisRepository.save(existingActris);
     }
+
 }
