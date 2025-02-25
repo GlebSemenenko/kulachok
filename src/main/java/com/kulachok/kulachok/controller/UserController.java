@@ -3,7 +3,7 @@ package com.kulachok.kulachok.controller;
 import com.kulachok.kulachok.dto.UserDto;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.UserRepository;
-import com.kulachok.kulachok.service.ResourceNotFoundException;
+import exception.ResourceNotFoundException;
 import com.kulachok.kulachok.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

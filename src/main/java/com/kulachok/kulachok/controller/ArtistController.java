@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import java.util.Map;
+
+
 @Slf4j
 @RestController
 @RequestMapping("/kulachok/actris")
 public class ArtistController {
 
-    // todo поменяй внедрение зависимости
     private final ActrisRepository actrisRepository;
     private final ActrisService actrisService;
 
@@ -39,7 +41,8 @@ public class ArtistController {
             return ResponseEntity.ok(savedActris);
         } catch (Exception e) {
             log.error("Error saving actris: {}", actrisDto, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body((Actris) Map.of("error", "User not found", "userId", userId));
         }
     }
 
@@ -50,8 +53,9 @@ public class ArtistController {
             log.info("Actris with id {} updated", id);
             return ResponseEntity.ok(savedActris);
         } else {
-            log.warn("Actris with id {} not found for update", id);
-            return ResponseEntity.notFound().build();
+            log.error("Actris with id {} not found for update", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body((Actris) Map.of("error", "User not found", "userId", id));
         }
     }
 

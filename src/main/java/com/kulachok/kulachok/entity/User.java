@@ -1,6 +1,6 @@
 package com.kulachok.kulachok.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,14 +22,17 @@ public class User implements CashAccountHolder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private int age;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "registrationDate")
     private LocalDate registrationDate = LocalDate.now();

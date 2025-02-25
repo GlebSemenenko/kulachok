@@ -11,6 +11,8 @@ import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class ActrisServiceImpl implements ActrisService{
 
@@ -75,7 +77,8 @@ public class ActrisServiceImpl implements ActrisService{
 
     @Override
     public Actris update(int id, ActrisDto actris) {
-        Actris existingActris = actrisRepository.findById(id).get();
+        Actris existingActris = actrisRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("User with id " + id + " not found"));
 
         existingActris.setName(actris.getName());
         existingActris.setAge(actris.getAge());

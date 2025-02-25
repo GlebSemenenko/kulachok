@@ -1,6 +1,6 @@
 package com.kulachok.kulachok.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,16 +21,16 @@ public class Actris implements CashAccountHolder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age")
     private int age;
 
     @Column(name = "nationality")
     private String nationality;
 
-    @Column(name = "followers", nullable = false)
+    @Column(name = "followers")
     private int followers;
 
     @Column(name = "registrationDate")

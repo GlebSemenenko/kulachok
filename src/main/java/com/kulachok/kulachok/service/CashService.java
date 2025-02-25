@@ -2,7 +2,7 @@ package com.kulachok.kulachok.service;
 
 import com.kulachok.kulachok.dto.CashDto;
 import com.kulachok.kulachok.entity.Cash;
-import com.kulachok.kulachok.entity.CashAccountHolder;
+import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
 
 public interface CashService {
 

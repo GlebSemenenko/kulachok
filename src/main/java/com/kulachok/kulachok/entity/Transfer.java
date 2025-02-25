@@ -30,7 +30,7 @@ public class Transfer {
     private BigDecimal allSumTransfer;
 
     @Column(name = "transfer_date")
-    private LocalDateTime transferDate = LocalDateTime.now();
+    private LocalDateTime transferDate;
 
     @Column(name = "description")
     private String description;

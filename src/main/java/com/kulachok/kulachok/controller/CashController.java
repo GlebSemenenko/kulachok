@@ -3,7 +3,7 @@ package com.kulachok.kulachok.controller;
 import com.kulachok.kulachok.dto.CashDto;
 import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.entity.Cash;
-import com.kulachok.kulachok.entity.CashAccountHolder;
+import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.ActrisRepository;
 import com.kulachok.kulachok.repository.UserRepository;

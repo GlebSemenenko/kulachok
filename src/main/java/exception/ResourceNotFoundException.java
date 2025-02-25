@@ -1,4 +1,4 @@
-package com.kulachok.kulachok.service;
+package exception;
 
 import lombok.extern.slf4j.Slf4j;
 

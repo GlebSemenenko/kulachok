@@ -27,10 +27,10 @@ public class UserSubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "UserID", nullable = false)
+    @Column(name = "UserID")
     private Long userId;
 
-    @Column(name = "ActrisID", nullable = false)
+    @Column(name = "ActrisID")
     private Long actrisId;
 
     @Column(name = "SubscriptionDate")
