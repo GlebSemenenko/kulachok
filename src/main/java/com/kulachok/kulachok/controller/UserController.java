@@ -1,7 +1,9 @@
 package com.kulachok.kulachok.controller;
 
+import com.kulachok.kulachok.dto.UserDto;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.UserRepository;
+import com.kulachok.kulachok.service.ResourceNotFoundException;
 import com.kulachok.kulachok.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +34,7 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody UserDto user) {
         try {
             User savedUser = userService.add(user);
             log.info("User saved: {}", savedUser);
@@ -44,7 +46,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody UserDto user) {
         if (userRepository.existsById(id)) {
             User savedUser = userService.update(id, user);
             log.info("User with id {} updated", id);
@@ -56,9 +58,9 @@ public class UserController {
     }
 
  @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id) throws ResourceNotFoundException {
         if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
+            userService.deleteUserById(id);
             log.info("User with id {} deleted", id);
             return ResponseEntity.ok().build();
         } else {

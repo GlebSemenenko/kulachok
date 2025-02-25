@@ -1,8 +1,7 @@
 package com.kulachok.kulachok.controller;
 
+import com.kulachok.kulachok.dto.ActrisDto;
 import com.kulachok.kulachok.entity.Actris;
-import com.kulachok.kulachok.entity.Cash;
-import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.repository.ActrisRepository;
 import com.kulachok.kulachok.service.ActrisService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,19 +32,19 @@ public class ArtistController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Actris> createActris(@RequestBody Actris actris, @RequestParam int userId) {
+    public ResponseEntity<Actris> createActris(@RequestBody ActrisDto actrisDto, @RequestParam int userId) {
         try {
-            Actris savedActris = actrisService.add(actris, userId);
+            Actris savedActris = actrisService.add(actrisDto, userId);
             log.info("Actris saved: {}", savedActris);
             return ResponseEntity.ok(savedActris);
         } catch (Exception e) {
-            log.error("Error saving actris: {}", actris, e);
+            log.error("Error saving actris: {}", actrisDto, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     @PutMapping("/update/{id}") // Метод для обновления актрисы по ID
-    public ResponseEntity<Actris> updateArtist(@PathVariable int id, @RequestBody Actris actris) {
+    public ResponseEntity<Actris> updateArtist(@PathVariable int id, @RequestBody ActrisDto actris) {
         if (actrisRepository.existsById(id)) {
             Actris savedActris = actrisService.update(id, actris);
             log.info("Actris with id {} updated", id);

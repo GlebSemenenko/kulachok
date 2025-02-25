@@ -10,8 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActrisDto {
-
-    private Integer id;
     private String name;
     private Integer followers;
     private Integer age;

@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.controller;
 
+import com.kulachok.kulachok.dto.CashDto;
 import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.CashAccountHolder;
@@ -37,7 +38,7 @@ public class CashController {
     public ResponseEntity<Cash> updateCash(
             @PathVariable int id,
             @RequestParam String accountType,
-            @RequestBody Cash cash) {
+            @RequestBody CashDto cash) {
 
         Class<? extends CashAccountHolder> userType;
 

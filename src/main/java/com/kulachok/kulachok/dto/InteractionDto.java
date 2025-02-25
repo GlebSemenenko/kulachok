@@ -10,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InteractionDto {
-
     private Integer idUser;
     private Integer idActris;
 }

@@ -23,7 +23,6 @@ public class UserSubscriptionController {
 
     public UserSubscriptionController(UserSubscriptionRepository usrSubscriptionRepository) {
         this.usrSubscriptionRepository = usrSubscriptionRepository;
-        log.info("UserSubscriptionController created");
     }
 
     @GetMapping("/get/{id}")

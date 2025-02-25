@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.service;
 
+import com.kulachok.kulachok.dto.ActrisDto;
 import com.kulachok.kulachok.entity.Actris;
 import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.Transfer;
@@ -9,9 +10,6 @@ import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class ActrisServiceImpl implements ActrisService{
@@ -35,8 +33,13 @@ public class ActrisServiceImpl implements ActrisService{
         this.userRepository = userRepository;
     }
 
-    public Actris add(Actris actris, int userId) {
+    public Actris add(ActrisDto actrisDto, int userId) {
         // Сохраняем новую актрису
+        Actris actris = new Actris();
+        actris.setName(actrisDto.getName());
+        actris.setAge(actrisDto.getAge());
+        actris.setFollowers(actrisDto.getFollowers());
+        actris.setNationality(actrisDto.getNationality());
         Actris savedActris = actrisRepository.save(actris);
 
 
@@ -71,15 +74,17 @@ public class ActrisServiceImpl implements ActrisService{
 
 
     @Override
-    public Actris update(int id, Actris updatedActris) {
+    public Actris update(int id, ActrisDto actris) {
         Actris existingActris = actrisRepository.findById(id).get();
 
-        existingActris.setName(updatedActris.getName());
-        existingActris.setAge(updatedActris.getAge());
-        existingActris.setFollowers(updatedActris.getFollowers());
-        existingActris.setNationality(updatedActris.getNationality());
+        existingActris.setName(actris.getName());
+        existingActris.setAge(actris.getAge());
+        existingActris.setFollowers(actris.getFollowers());
+        existingActris.setNationality(actris.getNationality());
 
         return actrisRepository.save(existingActris);
     }
 
 }
+
+

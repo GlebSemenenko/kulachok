@@ -36,17 +36,6 @@ public class Actris implements CashAccountHolder {
     @Column(name = "registrationDate")
     private LocalDate registrationDate = LocalDate.now();
 
-    @OneToOne
-    @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @OneToMany(mappedBy = "actris", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
+    @OneToMany(mappedBy = "actris")
     private List<UserSubscription> subscriptions;
-
-    @OneToOne
-    @JoinColumn(name = "cash_id")
-    @JsonIgnore
-    private Cash cashAccount;  // Изменено на ManyToOne
 }

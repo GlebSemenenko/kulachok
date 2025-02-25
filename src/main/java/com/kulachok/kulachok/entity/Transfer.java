@@ -29,7 +29,7 @@ public class Transfer {
     @Column(name = "all_sum_transfer")
     private BigDecimal allSumTransfer;
 
-    @Column(name = "transfer_date", nullable = false)
+    @Column(name = "transfer_date")
     private LocalDateTime transferDate = LocalDateTime.now();
 
     @Column(name = "description")
@@ -37,13 +37,10 @@ public class Transfer {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "cashid", nullable = false)
     private Cash cashAccount;
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "actrissid")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Actris actris;
 
     @ManyToOne

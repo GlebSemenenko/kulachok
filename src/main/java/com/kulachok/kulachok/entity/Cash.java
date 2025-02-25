@@ -34,7 +34,7 @@ public class Cash {
     @Column(name = "transferDate")
     private LocalDateTime transferDate = LocalDateTime.now();
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JsonIgnore
     @JoinColumn(name = "user_id")
     private User user;
@@ -42,9 +42,9 @@ public class Cash {
     @OneToOne
     @JsonIgnore
     @JoinColumn(name = "actris_id")
-    private Actris actris;  // Это остаётся ManyToOne
+    private Actris actris;
 
-    @OneToMany(mappedBy = "cashAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cashAccount")
     @JsonIgnore
     private List<Transfer> transfers;
 }
