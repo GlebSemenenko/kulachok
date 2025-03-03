@@ -11,18 +11,18 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "actriss")
+@Table(name = "actors")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Actris implements CashAccountHolder {
+public class Actor implements CashAccountHolder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "name")
-    private String name;
+    @Embedded
+    private FullName nameActor;
 
     @Column(name = "age")
     private int age;
@@ -34,8 +34,8 @@ public class Actris implements CashAccountHolder {
     private int followers;
 
     @Column(name = "registrationDate")
-    private LocalDate registrationDate = LocalDate.now();
+    private LocalDate registrationDate;
 
-    @OneToMany(mappedBy = "actris")
-    private List<UserSubscription> subscriptions;
+    @OneToMany(mappedBy = "actor")
+    private List<Subscription> subscriptions;
 }

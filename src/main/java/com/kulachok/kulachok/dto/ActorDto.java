@@ -14,11 +14,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ActrisDto {
+public class ActorDto {
 
-    @NotBlank(message = "Name cannot be empty")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
-    private String name;
+    @NotNull(message = "SNP cannot be null")
+    private FullName nameActor;
 
     @NotNull(message = "Followers count cannot be null")
     @Min(value = 0, message = "Followers count cannot be negative")

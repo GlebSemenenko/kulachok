@@ -1,6 +1,5 @@
 package com.kulachok.kulachok.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +9,12 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "userSubscriptions")
+@Table(name = "Subscription")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserSubscription {
+public class Subscription {
 
     /**
      * UserSubscription: Табилица саязи подписаки Users на Actris
@@ -27,25 +26,22 @@ public class UserSubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "UserID")
+    @Column(name = "UserID", nullable = false)
     private Long userId;
 
-    @Column(name = "ActrisID")
+    @Column(name = "ActrisID", nullable = false)
     private Long actrisId;
 
     @Column(name = "SubscriptionDate")
     private LocalDateTime subscriptionDate = LocalDateTime.now();
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "UserID", insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "ActrisID", insertable = false, updatable = false)
-    private Actris actris;
-
+    private Actor actor;
 }
 
 

@@ -1,23 +1,24 @@
 package com.kulachok.kulachok.service;
 
 import com.kulachok.kulachok.dto.UserDto;
-import com.kulachok.kulachok.entity.Actris;
+import com.kulachok.kulachok.entity.Actor;
 import com.kulachok.kulachok.entity.Cash;
 import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
-import com.kulachok.kulachok.entity.UserSubscription;
+import com.kulachok.kulachok.entity.Subscription;
 import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
 import exception.ResourceNotFoundException;
-import com.kulachok.kulachok.repository.ActrisRepository;
+import com.kulachok.kulachok.repository.ActorRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
-import com.kulachok.kulachok.repository.UserSubscriptionRepository;
+import com.kulachok.kulachok.repository.SubscriptionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import util.PasswordUtil;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -31,19 +32,19 @@ public class UserServiceImpl implements UserService {
 
     private final TransferRepository transferRepository;
 
-    private final ActrisRepository actrisRepository;
+    private final ActorRepository actorRepository;
 
-    private final UserSubscriptionRepository usrSubscriptionRepository;
+    private final SubscriptionRepository usrSubscriptionRepository;
 
     public UserServiceImpl(UserRepository userRepository
             , CashRepository cashRepository
             , TransferRepository transferRepository
-            , ActrisRepository actrisRepository
-            , UserSubscriptionRepository usrSubscriptionRepository) {
+            , ActorRepository actorRepository
+            , SubscriptionRepository usrSubscriptionRepository) {
         this.userRepository = userRepository;
         this.cashRepository = cashRepository;
         this.transferRepository = transferRepository;
-        this.actrisRepository = actrisRepository;
+        this.actorRepository = actorRepository;
         this.usrSubscriptionRepository = usrSubscriptionRepository;
     }
 
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService {
         user.setAge(userDto.getAge());
         user.setEmail(userDto.getEmail());
         user.setPassword(PasswordUtil.hashPassword(userDto.getPassword().toCharArray()));
+        user.setRegistrationDate(LocalDate.now());
 
         User savedUser = userRepository.save(user);
 
@@ -62,11 +64,11 @@ public class UserServiceImpl implements UserService {
         savedCash.setUser(savedUser);
         savedCash.setAmount(BigDecimal.ZERO);
         savedCash.setDescription("Оплата за услуги");
-        savedCash.setTransferType("DEBIT");
         savedCash.setTransferDate(LocalDateTime.now());
         cashRepository.save(savedCash);
 
         Transfer savedTransfer = new Transfer();
+        savedTransfer.setCashAccount(savedCash);
         savedTransfer.setUser(savedUser);
         savedTransfer.setTransferDate(LocalDateTime.now());
         savedTransfer.setDescription("При создании");
@@ -86,6 +88,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDto.getEmail());
         user.setPassword(userDto.getPassword());
 
+
         return userRepository.save(user);
     }
 
@@ -93,23 +96,31 @@ public class UserServiceImpl implements UserService {
     public void deleteUserById(int userId) throws ResourceNotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+
         Cash cash = cashRepository.findByUser(user)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Cash account not found"));
-        Actris actris = actrisRepository.findById(cash.getActris().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Actress not found"));
+                .orElse(null);
 
-        deleteTransfers(actris);
         deleteTransfers(user);
         deleteUserSubscriptions(user);
-        actrisRepository.delete(actris);
-        cashRepository.delete(cash);
+
+        if (cash != null) {
+            Actor actor = cash.getActor();
+
+            if (actor != null) {
+                deleteTransfers(actor);
+                actorRepository.delete(actor);
+            }
+            cashRepository.delete(cash);
+        }
+
         userRepository.delete(user);
     }
 
     private void deleteUserSubscriptions(User user) {
-        List<UserSubscription> subscriptions = user.getSubscriptions();
+        List<Subscription> subscriptions = user.getSubscriptions();
         usrSubscriptionRepository.deleteAll(subscriptions);
     }
 
@@ -123,8 +134,8 @@ public class UserServiceImpl implements UserService {
 
         if (User.class.isAssignableFrom(accountHolder.getClass())) {
             transfers = transferRepository.findByUser((User) accountHolder);
-        } else if (Actris.class.isAssignableFrom(accountHolder.getClass())) {
-            transfers = transferRepository.findByActris((Actris) accountHolder);
+        } else if (Actor.class.isAssignableFrom(accountHolder.getClass())) {
+            transfers = transferRepository.findByActor((Actor) accountHolder);
         } else {
             throw new IllegalArgumentException("Unknown account holder type");
         }

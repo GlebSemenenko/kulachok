@@ -37,6 +37,9 @@ public class User implements CashAccountHolder {
     @Column(name = "registrationDate")
     private LocalDate registrationDate = LocalDate.now();
 
+    @OneToOne()
+    private Actor actor;
+
     @OneToMany(mappedBy = "user")
-    private List<UserSubscription> subscriptions;
+    private List<Subscription> subscriptions;
 }

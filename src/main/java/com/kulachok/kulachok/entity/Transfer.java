@@ -6,8 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -35,13 +33,17 @@ public class Transfer {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "transferType")
+    private String transferType;
+
     @ManyToOne
     @JsonIgnore
     private Cash cashAccount;
 
     @ManyToOne
     @JsonIgnore
-    private Actris actris;
+    @JoinColumn(name = "actor_id")
+    private Actor actor;
 
     @ManyToOne
     @JsonIgnore

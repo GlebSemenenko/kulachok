@@ -28,11 +28,8 @@ public class Cash {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "transferType")
-    private String transferType;
-
     @Column(name = "transferDate")
-    private LocalDateTime transferDate = LocalDateTime.now();
+    private LocalDateTime transferDate;
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JsonIgnore
@@ -41,8 +38,8 @@ public class Cash {
 
     @OneToOne
     @JsonIgnore
-    @JoinColumn(name = "actris_id")
-    private Actris actris;
+    @JoinColumn(name = "actor_id")
+    private Actor actor;
 
     @OneToMany(mappedBy = "cashAccount")
     @JsonIgnore
