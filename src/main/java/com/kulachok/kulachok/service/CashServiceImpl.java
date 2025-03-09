@@ -3,9 +3,9 @@ package com.kulachok.kulachok.service;
 import com.kulachok.kulachok.dto.CashDto;
 import com.kulachok.kulachok.entity.Actor;
 import com.kulachok.kulachok.entity.Cash;
-import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
 import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
+import com.kulachok.kulachok.entity.model_interface.CashAccountHolder;
 import com.kulachok.kulachok.repository.ActorRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
@@ -13,6 +13,7 @@ import com.kulachok.kulachok.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import util.Balance;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +22,8 @@ import java.util.NoSuchElementException;
 @Slf4j
 @Service
 public class CashServiceImpl implements CashService {
+    //todo добавить логирование при сиключения
+
     private final UserRepository userRepository;
     private final CashRepository cashRepository;
     private final ActorRepository actorRepository;
@@ -44,9 +47,7 @@ public class CashServiceImpl implements CashService {
         Cash cash = getCashAccount(accountHolder);
         BigDecimal newBalance = getBigDecimal(accountCash, accountHolder, cash);
 
-        if (newBalance.signum() < 0) {
-            throw new IllegalStateException("Insufficient funds: balance cannot be negative");
-        }
+        Balance.checkBalanceNonNegative(newBalance);
 
         cash.setAmount(newBalance);
         cash = cashRepository.save(cash);
@@ -54,6 +55,20 @@ public class CashServiceImpl implements CashService {
 
         saveTransfer(accountCash, newBalance, accountHolder, cash);
         return cash;
+    }
+
+    private BigDecimal getBigDecimal(CashDto accountCash, CashAccountHolder accountHolder, Cash cash) {
+        BigDecimal newBalance;
+
+        if (accountHolder instanceof User) {
+            newBalance = cash.getAmount().add(accountCash.getAmount());
+        } else if (accountHolder instanceof Actor) {
+            newBalance = cash.getAmount().subtract(accountCash.getAmount());
+        } else {
+            throw new IllegalArgumentException("Unknown user type");
+        }
+
+        return newBalance;
     }
 
     private Class<? extends CashAccountHolder> getUserTypeAndCheckExistence(int userId, String accountType) {
@@ -77,20 +92,6 @@ public class CashServiceImpl implements CashService {
         }
 
         return userType;
-    }
-
-    private BigDecimal getBigDecimal(CashDto accountCash, CashAccountHolder accountHolder, Cash cash) {
-        BigDecimal newBalance;
-
-        if (accountHolder instanceof User) {
-            newBalance = cash.getAmount().add(accountCash.getAmount());
-        } else if (accountHolder instanceof Actor) {
-            newBalance = cash.getAmount().subtract(accountCash.getAmount());
-        } else {
-            throw new IllegalArgumentException("Unknown user type");
-        }
-
-        return newBalance;
     }
 
     private CashAccountHolder getAccountHolder(int id, Class<? extends CashAccountHolder> accountType) {

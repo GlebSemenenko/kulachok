@@ -23,7 +23,7 @@ public class Cash {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     /**
      * Сумма денег.

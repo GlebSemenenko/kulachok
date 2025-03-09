@@ -10,6 +10,7 @@ import com.kulachok.kulachok.repository.ActorRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
+import com.kulachok.kulachok.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,20 +21,24 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ActorServiceImpl implements ActorService {
+    //todo добавить логирование при сиключения
     private final ActorRepository actorRepository;
     private final TransferRepository transferRepository;
     private final CashRepository cashRepository;
     private final UserRepository userRepository;
+    private final VideoRepository videoRepository;
 
     @Autowired
-    public ActorServiceImpl(ActorRepository actorRepository
-            , TransferRepository transferRepository
-            , CashRepository cashRepository
-            , UserRepository userRepository) {
+    public ActorServiceImpl(ActorRepository actorRepository,
+                            TransferRepository transferRepository,
+                            CashRepository cashRepository,
+                            UserRepository userRepository,
+                            VideoRepository videoRepository) {
         this.actorRepository = actorRepository;
         this.transferRepository = transferRepository;
         this.cashRepository = cashRepository;
         this.userRepository = userRepository;
+        this.videoRepository = videoRepository;
     }
 
     @Transactional
@@ -42,16 +47,7 @@ public class ActorServiceImpl implements ActorService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         Actor actor = new Actor();
-        FullName name = new FullName();
-        name.setNickname(actorDto.getNameActor().getNickname());
-        name.setFirstName(actorDto.getNameActor().getFirstName());
-        name.setMiddleName(actorDto.getNameActor().getMiddleName());
-        name.setLastName(actorDto.getNameActor().getLastName());
-        actor.setNameActor(name);
-        actor.setAge(actorDto.getAge());
-        actor.setFollowers(actorDto.getFollowers());
-        actor.setNationality(actorDto.getNationality());
-        actor.setRegistrationDate(LocalDate.now());
+        mappedDataActor(actorDto, actor);
 
         Actor savedActor = actorRepository.save(actor);
 
@@ -85,6 +81,12 @@ public class ActorServiceImpl implements ActorService {
         Actor existingActor = actorRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + id + " not found"));
 
+        mappedDataActor(actor, existingActor);
+
+        return actorRepository.save(existingActor);
+    }
+
+    private void mappedDataActor(ActorDto actor, Actor existingActor) {
         FullName nameActor = new FullName();
         nameActor.setNickname(actor.getNameActor().getNickname());
         nameActor.setFirstName(actor.getNameActor().getFirstName());
@@ -96,10 +98,7 @@ public class ActorServiceImpl implements ActorService {
         existingActor.setFollowers(actor.getFollowers());
         existingActor.setNationality(actor.getNationality());
         existingActor.setRegistrationDate(LocalDate.now());
-
-        return actorRepository.save(existingActor);
     }
-
 }
 
 

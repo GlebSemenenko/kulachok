@@ -7,7 +7,7 @@ import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
 import com.kulachok.kulachok.entity.Subscription;
 import com.kulachok.kulachok.entity.Video;
-import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
+import com.kulachok.kulachok.entity.model_interface.CashAccountHolder;
 import com.kulachok.kulachok.repository.VideoRepository;
 import exception.ResourceNotFoundException;
 import com.kulachok.kulachok.repository.ActorRepository;
@@ -28,6 +28,8 @@ import java.util.NoSuchElementException;
 
 @Service
 public class UserServiceImpl implements UserService {
+    //todo добавить логирование при сиключения
+
     private final UserRepository userRepository;
     private final CashRepository cashRepository;
     private final TransferRepository transferRepository;

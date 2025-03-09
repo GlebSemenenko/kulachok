@@ -41,10 +41,10 @@ public class SubscriptionController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Subscription> updateSubscription(@Valid @RequestBody Subscription subscription
-            , BindingResult bindingResult) {
+    public ResponseEntity<Subscription> addSubscription(@Valid @RequestBody Subscription subscription,
+                                                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            log.error("Error saving subscription: {}", subscription, bindingResult);
+            log.error("Error saving subscription: {}", subscription);
             return ResponseEntity.badRequest().build();
         } else {
             subscription.setSubscriptionDate(LocalDateTime.now());
@@ -58,7 +58,7 @@ public class SubscriptionController {
     public ResponseEntity<Void> deleteSubscription(@PathVariable int id) {
         try {
             subscriptionRepository.deleteById(id);
-            log.info("Subscription with id {} deleted", id);
+            log.info("Subscription with {} deleted", id);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error("Error deleting subscription with id {}", id);

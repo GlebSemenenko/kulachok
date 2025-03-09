@@ -19,17 +19,17 @@ public class StatisticsVideo {
      * Количество просмотров видео.
      */
     @Column(name = "view_count")
-    private int viewCount;
+    private Integer viewCount;
 
     /**
      * Количество лайков.
      */
     @Column(name = "like_count")
-    private int likeCount;
+    private Integer likeCount;
 
     /**
      * Количество дизлайков.
      */
     @Column(name = "dislike_count")
-    private int dislikeCount;
+    private Integer dislikeCount;
 }

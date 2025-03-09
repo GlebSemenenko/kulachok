@@ -11,5 +11,4 @@ public class KulachokApplication {
     public static void main(String[] args) {
         SpringApplication.run(KulachokApplication.class, args);
     }
-
 }

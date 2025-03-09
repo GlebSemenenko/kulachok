@@ -22,7 +22,7 @@ public class UserDto {
 
     @Min(value = 18, message = "Age must be at least 18")
     @Max(value = 120, message = "Age must be less than or equal to 120")
-    private int age;
+    private Integer age;
 
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Email should be valid")

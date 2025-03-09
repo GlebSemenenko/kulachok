@@ -22,7 +22,7 @@ public class Transfer {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     /**
      * Сумма перевода.

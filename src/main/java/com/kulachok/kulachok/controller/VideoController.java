@@ -30,10 +30,12 @@ import java.util.Map;
 public class VideoController {
     private final VideoRepository videoRepository;
     private final VideoService videoService;
-    private final ValidationHandler validationHandler; // Добавление обработчика валидации
+    private final ValidationHandler validationHandler;
 
     @Autowired
-    public VideoController(VideoRepository videoRepository, VideoService videoService, ValidationHandler validationHandler) {
+    public VideoController(VideoRepository videoRepository,
+                           VideoService videoService,
+                           ValidationHandler validationHandler) {
         this.videoRepository = videoRepository;
         this.videoService = videoService;
         this.validationHandler = validationHandler;
@@ -51,7 +53,7 @@ public class VideoController {
                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
-            log.error("Error saving video: {}", videoDto, bindingResult);
+            log.error("Error saving video: {}", videoDto);
             return ResponseEntity.badRequest().body(errorMap);
         } else {
             Video savedVideo = videoService.addVideo(id, videoDto);
@@ -61,10 +63,12 @@ public class VideoController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateVideo(@PathVariable Integer id, @Valid @RequestBody VideoDto videoDto, BindingResult bindingResult) {
+    public ResponseEntity<Object> updateVideo(@PathVariable Integer id,
+                                              @Valid @RequestBody VideoDto videoDto,
+                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
-            log.error("Error updating video: {}", videoDto, bindingResult);
+            log.error("Error updating video: {}", videoDto);
             return ResponseEntity.badRequest().body(errorMap);
         } else if (!videoRepository.existsById(id)) {
             log.warn("Video with id {} not found for update", id);
@@ -83,6 +87,7 @@ public class VideoController {
             return ResponseEntity.notFound().build();
         }
         videoService.deleteVideo(id);
+
         log.info("Video with id {} deleted", id);
         return ResponseEntity.noContent().build();
     }

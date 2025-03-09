@@ -32,7 +32,7 @@ public class Subscription {
      * Идентификатор актрисы.
      */
     @Column(name = "ActrisID", nullable = false)
-    private Long actrisId;
+    private Integer actrisId;
 
     /**
      * Дата и время подписки.

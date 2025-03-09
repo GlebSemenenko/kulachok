@@ -1,6 +1,5 @@
 package com.kulachok.kulachok.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ContentDto {
     @Min(value = 5, message = "Duration must be at least 1 second")
-    private int duration;
+    private Integer duration;
 
     @NotBlank(message = "URL cannot be empty")
     private String url;

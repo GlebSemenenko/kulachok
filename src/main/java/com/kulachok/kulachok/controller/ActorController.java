@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,14 +25,16 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/kulachok/actris")
+@RequestMapping("/kulachok/actor")
 public class ActorController {
     private final ActorRepository actorRepository;
     private final ActorService actorService;
     private final ValidationHandler validationHandler;
 
     @Autowired
-    public ActorController(ActorRepository actorRepository, ActorService actorService, ValidationHandler validationHandler) {
+    public ActorController(ActorRepository actorRepository,
+                           ActorService actorService,
+                           ValidationHandler validationHandler){
         this.actorRepository = actorRepository;
         this.actorService = actorService;
         this.validationHandler = validationHandler;
@@ -46,50 +47,38 @@ public class ActorController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> createActor(@RequestParam int userId
-            , @Valid @RequestBody ActorDto actorDto
-            , BindingResult bindingResult) {
+    public ResponseEntity<Object> addActor(@RequestParam Integer id,
+                                           @Valid @RequestBody ActorDto actorDto,
+                                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
-            log.error("Error saving actor: {}", actorDto.getNameActor());
+            log.error("Error сreation Actor: {}", id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
         } else {
-            Actor savedActor = actorService.add(userId, actorDto);
-            log.info("Actris saved: {}", savedActor.getNameActor().toString());
+            Actor savedActor = actorService.add(id, actorDto);
+            log.info("Actor saved: {}", savedActor.getNameActor().toString());
             return ResponseEntity.ok(savedActor);
         }
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateActor(@Valid @PathVariable int id,
+    public ResponseEntity<Object> updateActor(@Valid @PathVariable Integer id,
                                               @Valid @RequestBody ActorDto actorDto,
                                               BindingResult bindingResult) {
         if (actorRepository.existsById(id)) {
             if (bindingResult.hasErrors()) {
                 Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
-                log.error("Error saving actor: {}", actorDto.getNameActor());
+                log.info("Actor update successful. ID: {}", id);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
             } else {
                 Actor savedActor = actorService.update(id, actorDto);
-                log.info("Actris with id {} updated", id);
+                log.info("Actor with id {} updated", id);
                 return ResponseEntity.ok(savedActor);
             }
         } else {
-            log.error("Actris with id {} not found for update", id);
+            log.error("Actor with id {} not found for update", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(Map.of("error", "User not found", "userId", id));
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteArtist(@PathVariable int id) {
-        if (actorRepository.existsById(id)) {
-            actorRepository.deleteById(id);
-            log.info("Actris with id {} deleted", id);
-            return ResponseEntity.noContent().build();
-        } else {
-            log.warn("Actris with id {} not found", id);
-            return ResponseEntity.notFound().build();
         }
     }
 }

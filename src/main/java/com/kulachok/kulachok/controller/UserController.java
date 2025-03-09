@@ -33,9 +33,9 @@ public class UserController {
     private final ValidationHandler validationHandler;
 
     @Autowired
-    public UserController(UserRepository userRepository
-            , UserService userService
-            , ValidationHandler validationHandler) {
+    public UserController(UserRepository userRepository,
+                          UserService userService,
+                          ValidationHandler validationHandler) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.validationHandler = validationHandler;
@@ -48,7 +48,8 @@ public class UserController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addUser(@Valid @RequestBody UserDto user, BindingResult bindingResult) {
+    public ResponseEntity<Object> addUser(@Valid @RequestBody UserDto user,
+                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
             log.error("Error saving user: {}", user.getUsername());
@@ -67,8 +68,8 @@ public class UserController {
         if (userRepository.existsById(id)) {
             if (bindingResult.hasErrors()) {
                 Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
-                log.error("Error saving user: {}", user.getUsername());
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body((User) errorMap);
+                log.error("Error updating user: {}", id);
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
             }else {
                 User savedUser = userService.update(id, user);
                 log.info("User with id {} updated", id);
@@ -77,14 +78,14 @@ public class UserController {
         } else {
             log.warn("User with id {} not found for update", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body((User) Map.of("error"
+                    .body(Map.of("error"
                             , "User not found", "UserName"
                             , user.getUsername()));
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) throws ResourceNotFoundException {
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) throws ResourceNotFoundException {
         if (userRepository.existsById(id)) {
             userService.deleteUserById(id);
             log.info("User with id {} deleted", id);

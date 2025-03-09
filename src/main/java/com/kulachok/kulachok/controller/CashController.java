@@ -27,15 +27,14 @@ public class CashController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Cash> addCash(@Valid
-            @PathVariable int id
-            , @RequestParam String accountType
-            , @RequestBody CashDto cash
-            , BindingResult bindingResult) {
+    public ResponseEntity<Cash> addCash(@Valid @PathVariable int id,
+                                        @RequestParam String accountType,
+                                        @RequestBody CashDto cash,
+                                        BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            log.error("Error saving cash: {}", cash, bindingResult);
+            log.error("Error saving cash: {}", cash);
             return ResponseEntity.badRequest().build();
-        }else {
+        } else {
             Cash savedCash = cashService.recordWalletValue(id, cash, accountType);
             return ResponseEntity.ok(savedCash);
         }

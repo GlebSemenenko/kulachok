@@ -10,21 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 public class VideoServiceImpl implements VideoService {
+    //todo добавить логирование при сиключения
     private final VideoRepository videoRepository;
 
     @Autowired
     public VideoServiceImpl(VideoRepository videoRepository) {
         this.videoRepository = videoRepository;
-    }
-
-    @Override
-    public List<Video> getAllVideos() {
-        return videoRepository.findAll();
     }
 
     @Override
@@ -57,7 +52,6 @@ public class VideoServiceImpl implements VideoService {
     public Video updateVideo(Integer id, VideoDto videoDto) {
         Video video = videoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Video not found"));
-        //todo внести добавление даты или её изменение в контексте задачи
         video.setTags(videoDto.getTags());
         video.getIdentification().setTitle(videoDto.getIdentification().getTitle());
         video.getIdentification().setDescription(videoDto.getIdentification().getDescription());
@@ -80,5 +74,6 @@ public class VideoServiceImpl implements VideoService {
             throw new NoSuchElementException("Video not found");
         }
         videoRepository.deleteById(id);
+
     }
 }

@@ -13,11 +13,11 @@ import lombok.Setter;
 
 public class StatisticsVideoDto {
     @Min(value = 0, message = "View count cannot be negative")
-    private int viewCount;
+    private Integer viewCount;
 
     @Min(value = 0, message = "Like count cannot be negative")
-    private int likeCount;
+    private Integer likeCount;
 
     @Min(value = 0, message = "Dislike count cannot be negative")
-    private int dislikeCount;
+    private Integer dislikeCount;
 }

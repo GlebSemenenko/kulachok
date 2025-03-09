@@ -1,6 +1,6 @@
 package com.kulachok.kulachok.entity;
 
-import com.kulachok.kulachok.entity.model_Interface.CashAccountHolder;
+import com.kulachok.kulachok.entity.model_interface.CashAccountHolder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class User implements CashAccountHolder {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     /**
      * Имя пользователя.
@@ -34,7 +34,7 @@ public class User implements CashAccountHolder {
      * Возраст пользователя.
      */
     @Column(name = "age")
-    private int age;
+    private Integer age;
 
     /**
      * Адрес электронной почты пользователя.
