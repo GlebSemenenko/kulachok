@@ -15,33 +15,42 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Subscription {
-
     /**
-     * UserSubscription: Табилица саязи подписаки Users на Actris
-     * Поля: (Идентификатор, связь юзера, связь актрисы, время подписки)
-     * Связи: (MTO User, MTO Actris)
+     * Уникальный идентификатор подписки.
      */
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    /**
+     * Идентификатор пользователя.
+     */
     @Column(name = "UserID", nullable = false)
     private Long userId;
 
+    /**
+     * Идентификатор актрисы.
+     */
     @Column(name = "ActrisID", nullable = false)
     private Long actrisId;
 
+    /**
+     * Дата и время подписки.
+     */
     @Column(name = "SubscriptionDate")
     private LocalDateTime subscriptionDate = LocalDateTime.now();
 
+    /**
+     * Связанный объект пользователя.
+     */
     @ManyToOne
     @JoinColumn(name = "UserID", insertable = false, updatable = false)
     private User user;
 
+    /**
+     * Связанный объект актрисы.
+     */
     @ManyToOne
     @JoinColumn(name = "ActrisID", insertable = false, updatable = false)
     private Actor actor;
 }
-
-

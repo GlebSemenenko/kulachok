@@ -11,12 +11,11 @@ import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 @Slf4j
@@ -27,6 +26,7 @@ public class CashServiceImpl implements CashService {
     private final ActorRepository actorRepository;
     private final TransferRepository transferRepository;
 
+    @Autowired
     public CashServiceImpl(UserRepository userRepository
             , CashRepository cashRepository
             , ActorRepository actorRepository
@@ -89,6 +89,7 @@ public class CashServiceImpl implements CashService {
         } else {
             throw new IllegalArgumentException("Unknown user type");
         }
+
         return newBalance;
     }
 

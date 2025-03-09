@@ -6,8 +6,6 @@ import exception.ResourceNotFoundException;
 
 public interface UserService {
     User add(UserDto user);
-
     User update(int id, UserDto user);
-
     void deleteUserById(int userId) throws ResourceNotFoundException;
 }

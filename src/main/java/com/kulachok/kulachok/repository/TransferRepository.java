@@ -9,6 +9,5 @@ import java.util.List;
 
 public interface TransferRepository extends JpaRepository<Transfer, Integer> {
     List<Transfer> findByUser(User accountHolder);
-
     List<Transfer> findByActor(Actor accountHolder);
 }

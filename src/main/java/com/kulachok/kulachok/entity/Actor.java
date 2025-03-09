@@ -17,25 +17,46 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Actor implements CashAccountHolder {
+    /**
+     * Уникальный идентификатор актера.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    /**
+     * Полное имя актера.
+     */
     @Embedded
     private FullName nameActor;
 
+    /**
+     * Возраст актера.
+     */
     @Column(name = "age")
     private int age;
 
+    /**
+     * Национальность актера.
+     */
     @Column(name = "nationality")
     private String nationality;
 
+    /**
+     * Количество подписчиков актера.
+     */
     @Column(name = "followers")
     private int followers;
 
+    /**
+     * Дата регистрации актера.
+     */
     @Column(name = "registrationDate")
     private LocalDate registrationDate;
 
+    /**
+     * Список подписок на актера.
+     */
     @OneToMany(mappedBy = "actor")
     private List<Subscription> subscriptions;
 }

@@ -1,8 +1,12 @@
 package com.kulachok.kulachok.entity;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -10,7 +14,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -20,21 +23,42 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Video {
+    /**
+     * Уникальный идентификатор видео.
+     */
     @Id
-    private Long id;
-    private String title;
-    private String description;
-    private String url;
-    private int duration; // в секундах
-    private LocalDateTime creationDate;
-    private Long authorId;
-    private String category;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    /**
+     * Идентификатор автора или пользователя, загрузившего видео.
+     */
+    @Column(name = "author_id")
+    private Integer authorId;
+
+    /**
+     * Список тегов, связанных с видео.
+     */
     @ElementCollection
+    @Column(name = "tags")
     private List<String> tags;
-    private int viewCount;
-    private int likeCount;
-    private int dislikeCount;
-    private String status;
-    private String thumbnailUrl;
-    private String format;
+
+    /**
+     * Объект, содержащий информацию о названии, описании и дате создания видео.
+     */
+    @Embedded
+    private Identification identification;
+
+    /**
+     * Объект, содержащий статистику просмотров, лайков и дизлайков.
+     */
+    @Embedded
+    private StatisticsVideo statistics;
+
+    /**
+     * Объект, содержащий информацию о URL, длительности и формате видео.
+     */
+    @Embedded
+    private Content content;
 }

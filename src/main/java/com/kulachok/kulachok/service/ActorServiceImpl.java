@@ -10,6 +10,7 @@ import com.kulachok.kulachok.repository.ActorRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,16 +20,12 @@ import java.util.NoSuchElementException;
 
 @Service
 public class ActorServiceImpl implements ActorService {
-
     private final ActorRepository actorRepository;
-
     private final TransferRepository transferRepository;
-
     private final CashRepository cashRepository;
-
     private final UserRepository userRepository;
 
-
+    @Autowired
     public ActorServiceImpl(ActorRepository actorRepository
             , TransferRepository transferRepository
             , CashRepository cashRepository
@@ -40,39 +37,33 @@ public class ActorServiceImpl implements ActorService {
     }
 
     @Transactional
-    public Actor add(int userId, ActorDto actorDto, com.kulachok.kulachok.dto.FullName fullName) {
-        // Проверяем, существует ли пользователь
+    public Actor add(int userId, ActorDto actorDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Создаем нового актера
         Actor actor = new Actor();
         FullName name = new FullName();
-        name.setNickname(fullName.getNickname());
-        name.setFirstName(fullName.getFirstName());
-        name.setMiddleName(fullName.getMiddleName());
-        name.setLastName(fullName.getLastName());
+        name.setNickname(actorDto.getNameActor().getNickname());
+        name.setFirstName(actorDto.getNameActor().getFirstName());
+        name.setMiddleName(actorDto.getNameActor().getMiddleName());
+        name.setLastName(actorDto.getNameActor().getLastName());
         actor.setNameActor(name);
         actor.setAge(actorDto.getAge());
         actor.setFollowers(actorDto.getFollowers());
         actor.setNationality(actorDto.getNationality());
         actor.setRegistrationDate(LocalDate.now());
 
-        // Сохраняем актера
         Actor savedActor = actorRepository.save(actor);
 
-        // Получаем кассу пользователя
         Cash cash = cashRepository.findByUser(user)
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cash account not found"));
 
-        // Устанавливаем связь между кассой и актером
         cash.setActor(savedActor);
         user.setActor(savedActor);
         cashRepository.save(cash);
 
-        // Создаем перевод
         Transfer savedTransfer = createTransfer(savedActor, cash);
         transferRepository.save(savedTransfer);
 
@@ -90,15 +81,15 @@ public class ActorServiceImpl implements ActorService {
 
 
     @Override
-    public Actor update(int id, ActorDto actor, com.kulachok.kulachok.dto.FullName fullName) {
+    public Actor update(int id, ActorDto actor) {
         Actor existingActor = actorRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("User with id " + id + " not found"));
 
         FullName nameActor = new FullName();
-        nameActor.setNickname(fullName.getNickname());
-        nameActor.setFirstName(fullName.getFirstName());
-        nameActor.setLastName(fullName.getLastName());
-        nameActor.setMiddleName(fullName.getMiddleName());
+        nameActor.setNickname(actor.getNameActor().getNickname());
+        nameActor.setFirstName(actor.getNameActor().getFirstName());
+        nameActor.setMiddleName(actor.getNameActor().getMiddleName());
+        nameActor.setLastName(actor.getNameActor().getLastName());
 
         existingActor.setNameActor(nameActor);
         existingActor.setAge(actor.getAge());

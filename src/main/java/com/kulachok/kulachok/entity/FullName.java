@@ -12,9 +12,24 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FullName {
+    /**
+     * Псевдоним пользователя.
+     */
     private String nickname;
+
+    /**
+     * Имя пользователя.
+     */
     private String firstName;
+
+    /**
+     * Отчество пользователя.
+     */
     private String middleName;
+
+    /**
+     * Фамилия пользователя.
+     */
     private String lastName;
 
     @Override

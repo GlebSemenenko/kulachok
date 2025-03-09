@@ -1,5 +1,6 @@
 package com.kulachok.kulachok.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -15,9 +16,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActorDto {
-
-    @NotNull(message = "SNP cannot be null")
-    private FullName nameActor;
+    @Valid
+    @NotNull(message = "Full name cannot be null")
+    private FullNameDto nameActor;
 
     @NotNull(message = "Followers count cannot be null")
     @Min(value = 0, message = "Followers count cannot be negative")
