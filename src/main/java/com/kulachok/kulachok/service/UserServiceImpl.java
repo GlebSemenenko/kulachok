@@ -3,33 +3,33 @@ package com.kulachok.kulachok.service;
 import com.kulachok.kulachok.dto.UserDto;
 import com.kulachok.kulachok.entity.Actor;
 import com.kulachok.kulachok.entity.Cash;
+import com.kulachok.kulachok.entity.Subscription;
 import com.kulachok.kulachok.entity.Transfer;
 import com.kulachok.kulachok.entity.User;
-import com.kulachok.kulachok.entity.Subscription;
 import com.kulachok.kulachok.entity.Video;
 import com.kulachok.kulachok.entity.model_interface.CashAccountHolder;
-import com.kulachok.kulachok.repository.VideoRepository;
-import exception.ResourceNotFoundException;
 import com.kulachok.kulachok.repository.ActorRepository;
 import com.kulachok.kulachok.repository.CashRepository;
+import com.kulachok.kulachok.repository.SubscriptionRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
-import com.kulachok.kulachok.repository.SubscriptionRepository;
+import com.kulachok.kulachok.repository.VideoRepository;
+import exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import util.PasswordUtil;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import static util.UtilEntity.checkFieldForNull;
+import static util.UtilEntity.checkFieldForNullOrEmpty;
+
 @Service
 public class UserServiceImpl implements UserService {
-    //todo добавить логирование при сиключения
-
     private final UserRepository userRepository;
     private final CashRepository cashRepository;
     private final TransferRepository transferRepository;
@@ -55,28 +55,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public User add(UserDto userDto) {
         User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setAge(userDto.getAge());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(PasswordUtil.hashPassword(userDto.getPassword().toCharArray()));
-        user.setRegistrationDate(LocalDate.now());
-
+        mappedDataUser(userDto, user);
         User savedUser = userRepository.save(user);
 
         Cash savedCash = new Cash();
-        savedCash.setUser(savedUser);
-        savedCash.setAmount(BigDecimal.ZERO);
-        savedCash.setDescription("Оплата за услуги");
-        savedCash.setTransferDate(LocalDateTime.now());
-
+        mappedDateCash(savedCash, savedUser);
         cashRepository.save(savedCash);
 
         Transfer savedTransfer = new Transfer();
-        savedTransfer.setCashAccount(savedCash);
-        savedTransfer.setUser(savedUser);
-        savedTransfer.setTransferDate(LocalDateTime.now());
-        savedTransfer.setDescription("При создании");
-
+        mappedDateTransfer(savedTransfer, savedCash, savedUser);
         transferRepository.save(savedTransfer);
 
         return savedUser;
@@ -88,10 +75,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NoSuchElementException("User with id "
                         + id + " not found"));
 
-        user.setUsername(userDto.getUsername());
-        user.setAge(userDto.getAge());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        mappedDataUser(userDto,user);
 
         return userRepository.save(user);
     }
@@ -159,6 +143,27 @@ public class UserServiceImpl implements UserService {
         }
 
         transferRepository.deleteAll(transfers);
+    }
+
+    private void mappedDataUser(UserDto userDto, User user) {
+        checkFieldForNullOrEmpty(userDto.getUsername(), "Username", user::setUsername);
+        checkFieldForNull(userDto.getAge(), "Age", user::setAge);
+        checkFieldForNullOrEmpty(userDto.getEmail(), "Email", user::setEmail);
+        checkFieldForNull(PasswordUtil.hashPassword(userDto.getPassword().toCharArray()), "Password", user::setPassword);
+    }
+
+    private void mappedDateCash(Cash savedCash, User savedUser) {
+        savedCash.setUser(savedUser);
+        savedCash.setAmount(BigDecimal.ZERO);
+        savedCash.setDescription("Оплата за услуги");
+        savedCash.setTransferDate(LocalDateTime.now());
+    }
+
+    private void mappedDateTransfer(Transfer savedTransfer, Cash savedCash, User savedUser) {
+        savedTransfer.setCashAccount(savedCash);
+        savedTransfer.setUser(savedUser);
+        savedTransfer.setTransferDate(LocalDateTime.now());
+        savedTransfer.setDescription("При создании");
     }
 }
 

@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/kulachok/users") // Общий путь для контроллера
+@RequestMapping("/kulachok/users")
 public class UserController {
     private final UserRepository userRepository;
     private final UserService userService;
@@ -52,7 +52,7 @@ public class UserController {
                                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
-            log.error("Error saving user: {}", user.getUsername());
+            log.error("Error saving user: {}", user.getEmail());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
         } else {
             User savedUser = userService.add(user);
@@ -62,15 +62,15 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateUser(@Valid @PathVariable int id,
-                                           @RequestBody UserDto user,
-                                           BindingResult bindingResult) {
+    public ResponseEntity<Object> updateUser(@PathVariable int id,
+                                             @Valid @RequestBody UserDto user,
+                                             BindingResult bindingResult) {
         if (userRepository.existsById(id)) {
             if (bindingResult.hasErrors()) {
                 Map<String, Object> errorMap = validationHandler.handleValidationErrors(bindingResult);
                 log.error("Error updating user: {}", id);
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
-            }else {
+            } else {
                 User savedUser = userService.update(id, user);
                 log.info("User with id {} updated", id);
                 return ResponseEntity.ok(savedUser);

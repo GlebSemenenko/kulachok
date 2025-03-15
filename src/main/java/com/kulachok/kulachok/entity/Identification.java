@@ -45,7 +45,6 @@ public class Identification {
     @Column(name = "category")
     private String category;
 
-
 }
 
 

@@ -62,7 +62,7 @@ public class ActorController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateActor(@Valid @PathVariable Integer id,
+    public ResponseEntity<Object> updateActor(@PathVariable Integer  id,
                                               @Valid @RequestBody ActorDto actorDto,
                                               BindingResult bindingResult) {
         if (actorRepository.existsById(id)) {

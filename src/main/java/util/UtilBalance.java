@@ -2,9 +2,9 @@ package util;
 
 import java.math.BigDecimal;
 
-public class Balance {
+public class UtilBalance {
 
-    private Balance() {}
+    private UtilBalance() {}
 
     public static void checkBalanceNonNegative(BigDecimal balance) {
         if (balance.signum() < 0) {

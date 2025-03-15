@@ -64,4 +64,5 @@ public class Video {
      */
     @Embedded
     private Content content;
+
 }

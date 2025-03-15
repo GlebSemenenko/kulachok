@@ -10,11 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
+
+import static util.UtilEntity.checkFieldForNullException;
+import static util.UtilEntity.checkFieldForNullOrEmpty;
+import static util.UtilEntity.checkFieldForNullOrEmptyException;
 
 @Service
 public class VideoServiceImpl implements VideoService {
-    //todo добавить логирование при сиключения
     private final VideoRepository videoRepository;
 
     @Autowired
@@ -25,47 +29,22 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public Video addVideo(Integer id, VideoDto videoDto) {
         Video video = new Video();
-        video.setAuthorId(id);
-        video.setTags(videoDto.getTags());
-        video.setIdentification(new Identification(
-                videoDto.getIdentification().getTitle(),
-                videoDto.getIdentification().getDescription(),
-                LocalDateTime.now(),
-                videoDto.getIdentification().getStatus(),
-                videoDto.getIdentification().getCategory()
-        ));
-        video.setStatistics(new StatisticsVideo(
-                videoDto.getStatisticsVideo().getViewCount(),
-                videoDto.getStatisticsVideo().getLikeCount(),
-                videoDto.getStatisticsVideo().getDislikeCount()
-        ));
-        video.setContent(new Content(
-                videoDto.getContent().getDuration(),
-                videoDto.getContent().getUrl(),
-                videoDto.getContent().getThumbnailUrl(),
-                videoDto.getContent().getFormat()
-        ));
+
+        mappedDataVideo(id, videoDto, video);
+        video.getIdentification().setCreationDate(LocalDateTime.now());
+
         return videoRepository.save(video);
     }
 
     @Override
     public Video updateVideo(Integer id, VideoDto videoDto) {
-        Video video = videoRepository.findById(id)
+        Video existingVideo = videoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Video not found"));
-        video.setTags(videoDto.getTags());
-        video.getIdentification().setTitle(videoDto.getIdentification().getTitle());
-        video.getIdentification().setDescription(videoDto.getIdentification().getDescription());
-        video.getIdentification().setStatus(videoDto.getIdentification().getStatus());
-        video.getIdentification().setCategory(videoDto.getIdentification().getCategory());
-        video.getStatistics().setViewCount(videoDto.getStatisticsVideo().getViewCount());
-        video.getStatistics().setLikeCount(videoDto.getStatisticsVideo().getLikeCount());
-        video.getStatistics().setDislikeCount(videoDto.getStatisticsVideo().getDislikeCount());
-        video.getContent().setDuration(videoDto.getContent().getDuration());
-        video.getContent().setUrl(videoDto.getContent().getUrl());
-        video.getContent().setThumbnailUrl(videoDto.getContent().getThumbnailUrl());
-        video.getContent().setFormat(videoDto.getContent().getFormat());
 
-        return videoRepository.save(video);
+        mappedDataVideo(id, videoDto, existingVideo);
+
+
+        return videoRepository.save(existingVideo);
     }
 
     @Override
@@ -74,6 +53,47 @@ public class VideoServiceImpl implements VideoService {
             throw new NoSuchElementException("Video not found");
         }
         videoRepository.deleteById(id);
+    }
 
+    private void mappedDataVideo(Integer id, VideoDto videoDto, Video existingVideo) {
+        Identification identification = existingVideo.getIdentification() != null
+                ? existingVideo.getIdentification()
+                : new Identification();
+        StatisticsVideo statisticsVideo = existingVideo.getStatistics() != null
+                ? existingVideo.getStatistics()
+                : new StatisticsVideo();
+        Content content = existingVideo.getContent() != null
+                ? existingVideo.getContent()
+                : new Content();
+
+        existingVideo.setAuthorId(id);
+
+        if (videoDto.getTags() != null) {
+            existingVideo.setTags(new ArrayList<>(videoDto.getTags()));
+        }
+
+        if (videoDto.getIdentification() != null) {
+            checkFieldForNullOrEmptyException(videoDto.getIdentification().getTitle(), "Title", identification::setTitle);
+            checkFieldForNullOrEmpty(videoDto.getIdentification().getDescription(), "Description", identification::setDescription);
+            checkFieldForNullOrEmptyException(videoDto.getIdentification().getStatus(), "Status", identification::setStatus);
+            checkFieldForNullOrEmptyException(videoDto.getIdentification().getCategory(), "Category", identification::setCategory);
+        }
+
+        if (videoDto.getStatisticsVideo() != null) {
+            checkFieldForNullException(videoDto.getStatisticsVideo().getViewCount(), "View Count", statisticsVideo::setViewCount);
+            checkFieldForNullException(videoDto.getStatisticsVideo().getLikeCount(), "Like Count", statisticsVideo::setLikeCount);
+            checkFieldForNullException(videoDto.getStatisticsVideo().getDislikeCount(), "Dislike Count", statisticsVideo::setDislikeCount);
+        }
+
+        if (videoDto.getContent() != null) {
+            checkFieldForNullException(videoDto.getContent().getDuration(), "Duration", content::setDuration);
+            checkFieldForNullOrEmptyException(videoDto.getContent().getUrl(), "URL", content::setUrl);
+            checkFieldForNullOrEmpty(videoDto.getContent().getThumbnailUrl(), "Thumbnail URL", content::setThumbnailUrl);
+            checkFieldForNullOrEmptyException(videoDto.getContent().getFormat(), "Format", content::setFormat);
+        }
+
+        existingVideo.setIdentification(identification);
+        existingVideo.setStatistics(statisticsVideo);
+        existingVideo.setContent(content);
     }
 }

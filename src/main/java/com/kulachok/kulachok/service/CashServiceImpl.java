@@ -13,17 +13,15 @@ import com.kulachok.kulachok.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import util.Balance;
+import util.UtilBalance;
+import util.UtilEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
 public class CashServiceImpl implements CashService {
-    //todo добавить логирование при сиключения
-
     private final UserRepository userRepository;
     private final CashRepository cashRepository;
     private final ActorRepository actorRepository;
@@ -42,12 +40,15 @@ public class CashServiceImpl implements CashService {
 
 
     public Cash recordWalletValue(int userId, CashDto accountCash, String accountType) {
-        Class<? extends CashAccountHolder> userType = getUserTypeAndCheckExistence(userId, accountType);
+        Class<? extends CashAccountHolder> userType = UtilEntity.getUserTypeAndCheckExistence(userId,
+                accountType,
+                userRepository,
+                actorRepository);
         CashAccountHolder accountHolder = getAccountHolder(userId, userType);
         Cash cash = getCashAccount(accountHolder);
         BigDecimal newBalance = getBigDecimal(accountCash, accountHolder, cash);
 
-        Balance.checkBalanceNonNegative(newBalance);
+        UtilBalance.checkBalanceNonNegative(newBalance);
 
         cash.setAmount(newBalance);
         cash = cashRepository.save(cash);
@@ -69,29 +70,6 @@ public class CashServiceImpl implements CashService {
         }
 
         return newBalance;
-    }
-
-    private Class<? extends CashAccountHolder> getUserTypeAndCheckExistence(int userId, String accountType) {
-        boolean exists;
-
-        Class<? extends CashAccountHolder> userType = switch (accountType.toLowerCase()) {
-            case "user" -> {
-                exists = userRepository.existsById(userId);
-                yield User.class;
-            }
-            case "actor" -> {
-                exists = actorRepository.existsById(userId);
-                yield Actor.class;
-            }
-            default -> throw new IllegalArgumentException("Unknown account type: " + accountType);
-        };
-
-        log.info("Checking if {} exists with id {}: {}", accountType, userId, exists);
-        if (!exists) {
-            throw new NoSuchElementException(accountType + " with id " + userId + " does not exist");
-        }
-
-        return userType;
     }
 
     private CashAccountHolder getAccountHolder(int id, Class<? extends CashAccountHolder> accountType) {

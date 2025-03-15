@@ -36,4 +36,6 @@ public class FullName {
     public String toString() {
         return nickname + " " + firstName + " " + middleName + " " + lastName;
     }
+
+
 }

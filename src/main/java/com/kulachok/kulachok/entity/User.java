@@ -57,7 +57,7 @@ public class User implements CashAccountHolder {
     /**
      * Объект, представляющий актера, связанного с пользователем.
      */
-    @OneToOne
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Actor actor;
 
     /**

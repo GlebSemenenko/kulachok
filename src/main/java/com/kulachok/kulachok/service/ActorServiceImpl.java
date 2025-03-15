@@ -10,7 +10,6 @@ import com.kulachok.kulachok.repository.ActorRepository;
 import com.kulachok.kulachok.repository.CashRepository;
 import com.kulachok.kulachok.repository.TransferRepository;
 import com.kulachok.kulachok.repository.UserRepository;
-import com.kulachok.kulachok.repository.VideoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,26 +18,28 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 
+import static util.UtilEntity.checkFieldForNull;
+import static util.UtilEntity.checkFieldForNullException;
+import static util.UtilEntity.checkFieldForNullOrEmpty;
+import static util.UtilEntity.checkFieldForNullOrEmptyException;
+
 @Service
 public class ActorServiceImpl implements ActorService {
-    //todo добавить логирование при сиключения
     private final ActorRepository actorRepository;
     private final TransferRepository transferRepository;
     private final CashRepository cashRepository;
     private final UserRepository userRepository;
-    private final VideoRepository videoRepository;
 
     @Autowired
     public ActorServiceImpl(ActorRepository actorRepository,
                             TransferRepository transferRepository,
                             CashRepository cashRepository,
-                            UserRepository userRepository,
-                            VideoRepository videoRepository) {
+                            UserRepository userRepository) {
         this.actorRepository = actorRepository;
         this.transferRepository = transferRepository;
         this.cashRepository = cashRepository;
         this.userRepository = userRepository;
-        this.videoRepository = videoRepository;
+
     }
 
     @Transactional
@@ -46,8 +47,13 @@ public class ActorServiceImpl implements ActorService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if (user.getActor() != null) {
+            throw new IllegalStateException("Актриса уже создана для данного пользователя");
+        }
+
         Actor actor = new Actor();
         mappedDataActor(actorDto, actor);
+        actor.setUser(user);
 
         Actor savedActor = actorRepository.save(actor);
 
@@ -65,6 +71,7 @@ public class ActorServiceImpl implements ActorService {
 
         return savedActor;
     }
+
 
     private Transfer createTransfer(Actor actor, Cash cash) {
         Transfer transfer = new Transfer();
@@ -88,15 +95,22 @@ public class ActorServiceImpl implements ActorService {
 
     private void mappedDataActor(ActorDto actor, Actor existingActor) {
         FullName nameActor = new FullName();
-        nameActor.setNickname(actor.getNameActor().getNickname());
-        nameActor.setFirstName(actor.getNameActor().getFirstName());
-        nameActor.setMiddleName(actor.getNameActor().getMiddleName());
-        nameActor.setLastName(actor.getNameActor().getLastName());
+        FullName existingName = existingActor.getNameActor();
 
+        if (actor.getNameActor() != null) {
+            checkFieldForNullOrEmpty(actor.getNameActor().getNickname(), "Nickname", nameActor::setNickname);
+            checkFieldForNullOrEmptyException(actor.getNameActor().getFirstName(), "FirstName", nameActor::setFirstName);
+            checkFieldForNullOrEmptyException(actor.getNameActor().getMiddleName(), "MiddleName", nameActor::setMiddleName);
+            checkFieldForNullOrEmpty(actor.getNameActor().getLastName(), "LastName", nameActor::setLastName);
+        } else {
+            nameActor = existingName;
+        }
         existingActor.setNameActor(nameActor);
-        existingActor.setAge(actor.getAge());
-        existingActor.setFollowers(actor.getFollowers());
-        existingActor.setNationality(actor.getNationality());
+
+        checkFieldForNullException(actor.getAge(), "Age", existingActor::setAge);
+        checkFieldForNull(actor.getFollowers(), "Followers", existingActor::setFollowers);
+        checkFieldForNullOrEmpty(actor.getNationality(), "Nationality", existingActor::setNationality);
+
         existingActor.setRegistrationDate(LocalDate.now());
     }
 }
